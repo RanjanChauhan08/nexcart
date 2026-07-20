@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.mail import send_mail
 from django.core.validators import validate_email
+from smtplib import SMTPException
 from django.db import transaction
 from django.utils import timezone
 from django.shortcuts import render, redirect, HttpResponse
@@ -110,7 +111,7 @@ def _send_email_code(request, email, purpose, role=None, user_id=None, password_
         )
         messages.success(request, f'A verification code was sent to {email}.')
         return True
-    except Exception:
+    except SMTPException:
         logger.exception('Unable to send %s verification code to %s.', purpose, email)
         request.session.pop('email_verification', None)
         messages.error(request, 'We could not send a verification code right now. Please try again later.')
