@@ -99,9 +99,6 @@ WSGI_APPLICATION = 'temp1.wsgi.application'
 import dj_database_url
 DATABASES = {
     'default': dj_database_url.config(
-        # Use the modern psycopg driver when a DATABASE_URL is set.
-        # See: https://github.com/jazzband/dj-database-url#driver-aliases
-        driver='django.db.backends.postgresql',
         # Fallback to SQLite for local development where DATABASE_URL is not set.
         default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
         conn_max_age=600,
