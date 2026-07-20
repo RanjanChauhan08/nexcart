@@ -293,7 +293,9 @@ def laptopservices(request):
     if request.method=='POST':
         form = ServiceBookingForm(request.POST)
         if form.is_valid():
-            form.save()
+            booking = form.save(commit=False)
+            booking.device_type = 'laptop'
+            booking.save()
             messages.success(request, "Service booked successfully!")
             return redirect("servicebooked")
     else:
