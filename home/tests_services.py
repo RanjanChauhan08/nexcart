@@ -12,6 +12,7 @@ class ServiceBookingTests(TestCase):
         Tests that a valid service booking for a laptop is created successfully.
         """
         form_data = {
+            'customer_name': 'Test Customer',
             'device_model': 'MacBook Pro 2022',
             'customer_location': '123 Test St, Test City',
             'customer_phone': '1234567890',
@@ -28,6 +29,7 @@ class ServiceBookingTests(TestCase):
         booking = ServiceBooking.objects.first()
         self.assertEqual(booking.device_type, 'laptop')
         self.assertEqual(booking.device_model, 'MacBook Pro 2022')
+        self.assertEqual(booking.customer_name, 'Test Customer')
         self.assertEqual(booking.customer_email, 'test@example.com')
 
         # Check that a success message was sent

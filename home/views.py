@@ -24,7 +24,7 @@ from django.urls import reverse
 from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation
 
-from home.models import Contact, Order, OrderItem, Product, Profile, ServiceBooking, TrackingUpdate
+from home.models import Order, OrderItem, Product, Profile, ServiceBooking, TrackingUpdate
 from django.contrib import messages
 
 
@@ -111,7 +111,7 @@ def _send_email_code(request, email, purpose, role=None, user_id=None, password_
         )
         messages.success(request, f'A verification code was sent to {email}.')
         return True
-    except SMTPException:
+    except (SMTPException, OSError):
         logger.exception('Unable to send %s verification code to %s.', purpose, email)
         request.session.pop('email_verification', None)
         messages.error(request, 'We could not send a verification code right now. Please try again later.')
@@ -236,27 +236,20 @@ def seller_dashboard(request):
             return redirect('seller_dashboard')
 
         if action == 'publish_product':
-            name = request.POST.get('name', '').strip()
-            category = request.POST.get('category')
-            description = request.POST.get('description', '').strip()
-            image_url = request.POST.get('image_url', '').strip()
-            try:
-                price = request.POST.get('price')
-                stock = int(request.POST.get('stock', 0))
-                if not name or not price or stock < 0 or category not in dict(Product.CATEGORY_CHOICES):
-                    raise ValueError
-                Product.objects.create(
-                    seller=request.user, category=category, name=name, description=description, price=price,
-                    image=request.FILES.get('image'), image_url=image_url, stock=stock,
-                )
+            product_form = ProductForm(request.POST, request.FILES)
+            if product_form.is_valid():
+                product = product_form.save(commit=False)
+                product.seller = request.user
+                product.save()
                 messages.success(request, 'Product published successfully.')
                 return redirect('seller_dashboard')
-            except (TypeError, ValueError):
-                messages.error(request, 'Enter a product name, valid price, and stock of zero or more.')
+            else:
+                messages.error(request, 'Please correct the errors below.')
 
     return render(request, 'seller/dashboard.html', {
         'products': Product.objects.filter(seller=request.user),
         'seller_orders': Order.objects.filter(seller=request.user).prefetch_related('items__product'),
+        'product_form': ProductForm(),
     })
 
 

@@ -38,46 +38,13 @@
         <div class="col-lg-5">
             <div class="card seller-card">
                 <div class="card-body p-4">
-                    <h2 class="h4 fw-bold mb-4">Post a product</h2>
-                    <form method="post" enctype="multipart/form-data">
+                    <h2 class="h4 fw-bold mb-3">Post a product</h2>
+                    <form method="post" enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
                         <input type="hidden" name="action" value="publish_product">
-                        <div class="mb-3">
-                            <label class="form-label" for="name">Product name</label>
-                            <input class="form-control" id="name" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="description">Description</label>
-                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="category">Product category</label>
-                            <select class="form-select" id="category" name="category" required>
-                                <option value="phone">Phone</option>
-                                <option value="laptop">Laptop</option>
-                                <option value="earbuds">Earbuds</option>
-                                <option value="tablet">Tablet</option>
-                            </select>
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-sm-6">
-                                <label class="form-label" for="price">Price (₹)</label>
-                                <input class="form-control" type="number" min="0" step="0.01" id="price" name="price" required>
-                            </div>
-                            <div class="col-sm-6">
-                                <label class="form-label" for="stock">Stock</label>
-                                <input class="form-control" type="number" min="0" id="stock" name="stock" required>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <label class="form-label" for="image">Upload product image <span class="text-muted">(optional)</span></label>
-                            <input class="form-control" type="file" id="image" name="image" accept="image/*">
-                            <div class="form-text">Choose an image from your device. Uploaded images are preferred over image URLs.</div>
-                        </div>
-                        <div class="mt-3 mb-4">
-                            <label class="form-label" for="image_url">Product image URL <span class="text-muted">(optional alternative)</span></label>
-                            <input class="form-control" type="url" id="image_url" name="image_url" placeholder="https://example.com/product.jpg">
-                        </div>
+                        {% for field in product_form %}
+                        <div class="mb-3">{{ field.label_tag }} {{ field }} {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %} {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}</div>
+                        {% endfor %}
                         <button class="btn btn-dark w-100 py-2" type="submit">Publish product</button>
                     </form>
                 </div>
