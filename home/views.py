@@ -265,18 +265,18 @@ def about(request):
     return render(request,'home/about.html')
 def services(request):
     return render(request,'services/services.html')
+from .forms import ContactForm
 def contact(request):
-    return render(request,'home/contact.html')
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('ContactSend')
+    else:
+        form = ContactForm()
+    return render(request,'home/contact.html', {'form': form})
 def ContactSend(request):
-    if request.method=="POST":
-        name=request.POST.get('name')
-        email=request.POST.get('email')
-        phnumber=request.POST.get('phnumber')
-        reason_for_contacting=request.POST.get('reason_for_contacting')
-        contact=Contact(name=name,email=email,phnumber=phnumber,reason_for_contacting=reason_for_contacting)
-        contact.save()
     return render(request,"ContactSend.html")
-from .forms import ServiceBookingForm
 def phoneservices(request):
     if request.method=='POST':
         form = ServiceBookingForm(request.POST)
