@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Buy Earbuds{% endblock title %}
+
+{% block body %}
+<style>
+    /* FIX: Added top padding to prevent the fixed navbar from overlapping the title */
+    .main-content-wrapper {
+        padding-top: 90px; 
+    }
+
+    .earbud-card {
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05) !important;
+        overflow: hidden;
+    }
+    
+    .earbud-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
+    }
+    
+    .img-container {
+        position: relative;
+        background-color: #f8f9fa;
+        overflow: hidden;
+        /* FIX: Ensures a stable bounding area for the images */
+        height: 240px; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .earbud-img {
+        width: 100%;
+        height: 100%;
+        /* FIX: Ensures the image scales down cleanly instead of expanding past its container boundaries */
+        object-fit: contain; 
+        padding: 15px;
+        transition: transform 0.5s ease;
+    }
+    
+    .earbud-card:hover .earbud-img {
+        transform: scale(1.05);
+    }
+    
+    .btn-modern {
+        font-weight: 500;
+        letter-spacing: 0.3px;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-modern:hover {
+        background-color: #111 !important;
+        transform: scale(1.02);
+    }
+    
+    .badge-premium {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        z-index: 2;
+        backdrop-filter: blur(8px);
+        background: rgba(0, 0, 0, 0.75);
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+</style>
+
+<div class="container main-content-wrapper py-5">
+
+    <div class="text-center mb-5">
+        <span class="text-uppercase text-muted small fw-bold tracking-wider d-block mb-2">Premium Audio Collection</span>
+        <h1 class="fw-black display-5 mb-3" style="letter-spacing: -1px;">Explore Wireless Earbuds</h1>
+        <div class="mx-auto bg-dark rounded" style="width: 60px; height: 4px;"></div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card h-100 rounded-4 shadow-sm earbud-card">
+                <div class="img-container">
+                    <span class="badge badge-premium px-3 py-2 rounded-pill">Premium Choice</span>
+                    <img src="{% static 'images/airpodspro2.png' %}" class="earbud-img" alt="AirPods Pro 2">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between p-4 text-center">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">AirPods Pro 2</h5>
+                        <p class="text-muted small mb-3">Apple</p>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-dark mb-3">₹24,999</h4>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="AirPods Pro 2">
+                            <input type="hidden" name="price" value="24999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1588423771073-b8903fbb85b5">
+                            <button type="submit" class="btn btn-dark w-100 rounded-pill py-2.5 btn-modern">Add To Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card h-100 rounded-4 shadow-sm earbud-card">
+                <div class="img-container">
+                    <span class="badge badge-premium px-3 py-2 rounded-pill bg-success">Best Value</span>
+                    <img src="{% static 'images/airdopes141.jpg' %}" class="earbud-img" alt="Boat Airdopes 141">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between p-4 text-center">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">Boat Airdopes 141</h5>
+                        <p class="text-muted small mb-3">boAt Lifestyle</p>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-dark mb-3">₹1,499</h4>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="Boat Airdopes 141">
+                            <input type="hidden" name="price" value="1499">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1">
+                            <button type="submit" class="btn btn-dark w-100 rounded-pill py-2.5 btn-modern">Add To Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card h-100 rounded-4 shadow-sm earbud-card">
+                <div class="img-container">
+                    <img src="{% static 'images/nothingear2.jfif' %}" class="earbud-img" alt="Nothing Ear 2">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between p-4 text-center">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">Nothing Ear 2</h5>
+                        <p class="text-muted small mb-3">Nothing</p>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-dark mb-3">₹9,999</h4>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="Nothing Ear 2">
+                            <input type="hidden" name="price" value="9999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb">
+                            <button type="submit" class="btn btn-dark w-100 rounded-pill py-2.5 btn-modern">Add To Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card h-100 rounded-4 shadow-sm earbud-card">
+                <div class="img-container">
+                    <img src="{% static 'images/oneplusbudspro2.jpg' %}" class="earbud-img" alt="OnePlus Buds Pro 2">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between p-4 text-center">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">OnePlus Buds Pro 2</h5>
+                        <p class="text-muted small mb-3">OnePlus</p>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-dark mb-3">₹11,999</h4>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="OnePlus Buds Pro 2">
+                            <input type="hidden" name="price" value="11999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1505740420928-5e560c06d30e">
+                            <button type="submit" class="btn btn-dark w-100 rounded-pill py-2.5 btn-modern">Add To Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card h-100 rounded-4 shadow-sm earbud-card">
+                <div class="img-container">
+                    <img src="{% static 'images/budspro2.jpg' %}" class="earbud-img" alt="Samsung Galaxy Buds 2 Pro">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between p-4 text-center">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">Samsung Galaxy Buds 2 Pro</h5>
+                        <p class="text-muted small mb-3">Samsung</p>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-dark mb-3">₹13,999</h4>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="Samsung Galaxy Buds 2 Pro">
+                            <input type="hidden" name="price" value="13999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1484704849700-f032a568e944">
+                            <button type="submit" class="btn btn-dark w-100 rounded-pill py-2.5 btn-modern">Add To Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card h-100 rounded-4 shadow-sm earbud-card">
+                <div class="img-container">
+                    <img src="{% static 'images/realmebudsair5.jpg' %}" class="earbud-img" alt="Realme Buds Air 5">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between p-4 text-center">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">Realme Buds Air 5</h5>
+                        <p class="text-muted small mb-3">Realme</p>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-dark mb-3">₹4,999</h4>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="Realme Buds Air 5">
+                            <input type="hidden" name="price" value="4999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1590658268037-6bf12165a8df">
+                            <button type="submit" class="btn btn-dark w-100 rounded-pill py-2.5 btn-modern">Add To Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card h-100 rounded-4 shadow-sm earbud-card">
+                <div class="img-container">
+                    <span class="badge badge-premium px-3 py-2 rounded-pill">Top Rated</span>
+                    <img src="{% static 'images/sonywf-1000wm5.webp' %}" class="earbud-img" alt="Sony WF-1000XM5">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between p-4 text-center">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">Sony WF-1000XM5</h5>
+                        <p class="text-muted small mb-3">Sony</p>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-dark mb-3">₹22,999</h4>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="Sony WF-1000XM5">
+                            <input type="hidden" name="price" value="22999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1545127398-14699f92334b">
+                            <button type="submit" class="btn btn-dark w-100 rounded-pill py-2.5 btn-modern">Add To Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card h-100 rounded-4 shadow-sm earbud-card">
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90" class="earbud-img" alt="JBL Tune Flex">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between p-4 text-center">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">JBL Tune Flex</h5>
+                        <p class="text-muted small mb-3">JBL</p>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-dark mb-3">₹6,999</h4>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="JBL Tune Flex">
+                            <input type="hidden" name="price" value="6999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1583394838336-acd977736f90">
+                            <button type="submit" class="btn btn-dark w-100 rounded-pill py-2.5 btn-modern">Add To Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="card h-100 rounded-4 shadow-sm earbud-card">
+                <div class="img-container">
+                    <img src="{% static 'images/noiseairbudspro.jfif' %}" class="earbud-img" alt="Noise Air Buds Pro">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between p-4 text-center">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">Noise Air Buds Pro</h5>
+                        <p class="text-muted small mb-3">Noise</p>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-dark mb-3">₹3,499</h4>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="Noise Air Buds Pro">
+                            <input type="hidden" name="price" value="3499">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1606741965509-9d3c9d0d72b4">
+                            <button type="submit" class="btn btn-dark w-100 rounded-pill py-2.5 btn-modern">Add To Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock body %}

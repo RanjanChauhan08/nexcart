@@ -1,0 +1,213 @@
+{% extends "services/baseservices.html" %}
+
+{% block title %}Laptop Service{% endblock title %}
+
+{% block servicetitle %}
+Laptop Service
+{% endblock servicetitle %}
+
+{% block dropdown %}
+
+    <input type="hidden" name="device_type" value="laptop">
+
+    <select class="form-select" name="device_model" required>
+        <option value="">Select Laptop Model</option>
+
+        <!-- Apple -->
+        <option value="MacBook Air M1">MacBook Air M1</option>
+        <option value="MacBook Air M2">MacBook Air M2</option>
+        <option value="MacBook Air M3">MacBook Air M3</option>
+        <option value="MacBook Pro M1">MacBook Pro M1</option>
+        <option value="MacBook Pro M2">MacBook Pro M2</option>
+        <option value="MacBook Pro M3">MacBook Pro M3</option>
+
+        <!-- Dell -->
+        <option value="Dell Inspiron 15">Dell Inspiron 15</option>
+        <option value="Dell Inspiron 14">Dell Inspiron 14</option>
+        <option value="Dell XPS 13">Dell XPS 13</option>
+        <option value="Dell XPS 15">Dell XPS 15</option>
+        <option value="Dell Latitude">Dell Latitude</option>
+        <option value="Dell Vostro">Dell Vostro</option>
+        <option value="Dell G15">Dell G15</option>
+        <option value="Alienware M16">Alienware M16</option>
+
+        <!-- HP -->
+        <option value="HP Pavilion">HP Pavilion</option>
+        <option value="HP Victus">HP Victus</option>
+        <option value="HP Omen">HP Omen</option>
+        <option value="HP Envy">HP Envy</option>
+        <option value="HP Spectre x360">HP Spectre x360</option>
+        <option value="HP ProBook">HP ProBook</option>
+        <option value="HP EliteBook">HP EliteBook</option>
+
+        <!-- Lenovo -->
+        <option value="Lenovo IdeaPad">Lenovo IdeaPad</option>
+        <option value="Lenovo ThinkPad">Lenovo ThinkPad</option>
+        <option value="Lenovo Legion">Lenovo Legion</option>
+        <option value="Lenovo Yoga">Lenovo Yoga</option>
+
+        <!-- ASUS -->
+        <option value="ASUS VivoBook">ASUS VivoBook</option>
+        <option value="ASUS ZenBook">ASUS ZenBook</option>
+        <option value="ASUS TUF Gaming">ASUS TUF Gaming</option>
+        <option value="ASUS ROG Strix">ASUS ROG Strix</option>
+
+        <!-- Acer -->
+        <option value="Acer Aspire 5">Acer Aspire 5</option>
+        <option value="Acer Nitro 5">Acer Nitro 5</option>
+        <option value="Acer Predator Helios">Acer Predator Helios</option>
+        <option value="Acer Swift">Acer Swift</option>
+
+        <!-- MSI -->
+        <option value="MSI Modern">MSI Modern</option>
+        <option value="MSI GF63">MSI GF63</option>
+        <option value="MSI Katana">MSI Katana</option>
+
+        <!-- Samsung -->
+        <option value="Samsung Galaxy Book">Samsung Galaxy Book</option>
+
+        <!-- Microsoft -->
+        <option value="Microsoft Surface Laptop">Microsoft Surface Laptop</option>
+
+        <option value="Other">Other</option>
+    </select>
+
+    <div class="mt-4">
+        <label class="form-label fw-bold">Select Problems</label>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Screen Broken">
+            <label class="form-check-label">Screen Broken</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Screen Flickering">
+            <label class="form-check-label">Screen Flickering</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Display Not Working">
+            <label class="form-check-label">Display Not Working</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Keyboard Not Working">
+            <label class="form-check-label">Keyboard Not Working</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Touchpad Not Working">
+            <label class="form-check-label">Touchpad Not Working</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Battery Issue">
+            <label class="form-check-label">Battery Issue</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Charging Problem">
+            <label class="form-check-label">Charging Problem</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Laptop Heating">
+            <label class="form-check-label">Laptop Heating</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Fan Noise">
+            <label class="form-check-label">Fan Noise</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Laptop Not Turning On">
+            <label class="form-check-label">Laptop Not Turning On</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Slow Performance">
+            <label class="form-check-label">Slow Performance</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Virus or Malware">
+            <label class="form-check-label">Virus / Malware</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Windows Installation">
+            <label class="form-check-label">Windows Installation</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Data Recovery">
+            <label class="form-check-label">Data Recovery</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Hard Disk Failure">
+            <label class="form-check-label">Hard Disk Failure</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="SSD Upgrade">
+            <label class="form-check-label">SSD Upgrade</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="RAM Upgrade">
+            <label class="form-check-label">RAM Upgrade</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Speaker Issue">
+            <label class="form-check-label">Speaker Issue</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Microphone Issue">
+            <label class="form-check-label">Microphone Issue</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Wi-Fi Problem">
+            <label class="form-check-label">Wi-Fi Problem</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="USB Port Not Working">
+            <label class="form-check-label">USB Port Not Working</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Motherboard Issue">
+            <label class="form-check-label">Motherboard Issue</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Water Damage">
+            <label class="form-check-label">Water Damage</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="Other">
+            <label class="form-check-label">Other</label>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <label class="form-label fw-bold">Your Location</label>
+        <input type="text" name="customer_location" class="form-control" placeholder="Enter your address" required>
+    </div>
+
+    <div class="mt-4">
+        <label class="form-label fw-bold">Phone Number</label>
+        <input type="text" name="customer_phone" class="form-control" placeholder="Enter your number" required>
+    </div>
+
+    <div class="mt-4">
+        <label class="form-label fw-bold">Email Address</label>
+        <input type="email" name="customer_email" class="form-control" placeholder="Enter your email" required>
+    </div>
+{% endblock dropdown %}

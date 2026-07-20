@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Service Booked Successfully | NexCart{% endblock title %}
+
+{% block body %}
+<!-- Custom Modern UI Styles for Confirmation Page -->
+<style>
+    .confirmation-wrapper {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .success-card {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 32px;
+        max-width: 550px;
+        width: 100%;
+    }
+    .animated-success-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(25, 135, 84, 0.1);
+        color: #198754;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 2.5rem;
+        margin: 0 auto 1.5rem auto;
+        animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes scaleIn {
+        0% { transform: scale(0.6); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+</style>
+
+<div class="container confirmation-wrapper py-5">
+    <div class="card success-card shadow-sm p-5 text-center border-0">
+        <!-- Success Visual Indicator -->
+        <div class="animated-success-icon">
+            <i class="bi bi-shield-check"></i>
+        </div>
+
+        <!-- Heading & Details -->
+        <span class="text-success fw-bold text-uppercase tracking-widest small d-block mb-2">Confirmed</span>
+        <h1 class="fw-black text-dark mb-3" style="font-weight: 800;">Service Booked!</h1>
+        <p class="text-muted mb-4" style="line-height: 1.6;">
+            Your custom diagnostics and repair appointment has been locked into our database system. A certified service technician will review your hardware details and contact you via your profile details shortly.
+        </p>
+
+        <!-- Dynamic Reference Tracker Banner -->
+        <div class="bg-light rounded-4 p-3 mb-5 border">
+            <span class="text-secondary small d-block font-monospace">NexCart Service Allocation Status</span>
+            <div class="fw-bold text-dark mt-1">Status: Pending Technical Allocation</div>
+        </div>
+
+        <!-- Back to Home Action Button -->
+        <div class="d-grid gap-2">
+            <!-- FIXED: Pointing directly to your root homepage pattern view -->
+            <a href="{% url 'home' %}" class="btn btn-dark rounded-pill py-3 fw-bold shadow-sm">
+                <i class="bi bi-house-door me-2"></i> Return to Homepage
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock body %}

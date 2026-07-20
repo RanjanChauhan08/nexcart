@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Explore Laptops{% endblock title %}
+
+{% block body %}
+<!-- Custom Inline Styles for Modern Hover Animations -->
+<style>
+    .hover-lift {
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.08) !important;
+    }
+    .product-img-wrapper {
+        overflow: hidden;
+        position: relative;
+    }
+    .product-img {
+        transition: transform 0.4s ease;
+    }
+    .hover-lift:hover .product-img {
+        transform: scale(1.04);
+    }
+</style>
+
+<div class="container py-5">
+    <!-- Modern Minimalist Header -->
+    <div class="text-center mb-5">
+        <span class="text-uppercase tracking-wider text-muted small fw-bold text-primary">Premium Collection</span>
+        <h1 class="fw-extrabold display-5 mt-1 mb-3">Explore Laptops</h1>
+        <p class="text-muted mx-auto" style="max-width: 500px;">Discover elite performance and stunning design built for your daily workflow and gaming needs.</p>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+
+        <!-- Laptop 1: MacBook Air M5 -->
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
+                <div class="product-img-wrapper rounded-top-4">
+                    <img src="{% static 'images/m5.jpg' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="MacBook Air M5">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold mb-1">MacBook Air M5</h5>
+                    <p class="text-muted small mb-3">Apple Silicon Powerhouse</p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="h4 fw-bold text-dark mb-0">₹1,09,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="MacBook Air M5">
+                            <input type="hidden" name="price" value="109999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1517336714739-489689fd1ca8">
+                            <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Laptop 2: Dell XPS 13 -->
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
+                <div class="product-img-wrapper rounded-top-4">
+                    <!-- Fixed missing file extension from original code assuming it's .jpg/.png -->
+                <img src="{% static 'images/xps13' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Dell XPS 13">                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold mb-1">Dell XPS 13</h5>
+                    <p class="text-muted small mb-3">InfinityEdge Ultrabook</p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="h4 fw-bold text-dark mb-0">₹92,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="Dell XPS 13">
+                            <input type="hidden" name="price" value="92999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1496181133206-80ce9b88a853">
+                            <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Laptop 3: HP Victus 16 -->
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
+                <div class="product-img-wrapper rounded-top-4">
+                    <img src="{% static 'images/victus16.jpg' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="HP Victus 16">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold mb-1">HP Victus 16</h5>
+                    <p class="text-muted small mb-3">Immersive Casual Gaming</p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="h4 fw-bold text-dark mb-0">₹74,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="HP Victus 16">
+                            <input type="hidden" name="price" value="74999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2">
+                            <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Laptop 4: Lenovo Legion 5 -->
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
+                <div class="product-img-wrapper rounded-top-4">
+                    <img src="{% static 'images/legion5.avif' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Lenovo Legion 5">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold mb-1">Lenovo Legion 5</h5>
+                    <p class="text-muted small mb-3">Pro-grade Thermal Gaming</p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="h4 fw-bold text-dark mb-0">₹89,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="Lenovo Legion 5">
+                            <input type="hidden" name="price" value="89999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1515879218367-8466d910aaa4">
+                            <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Laptop 5: Asus ROG Strix -->
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
+                <div class="product-img-wrapper rounded-top-4">
+                    <img src="{% static 'images/strix.png' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Asus ROG Strix">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold mb-1">Asus ROG Strix</h5>
+                    <p class="text-muted small mb-3">Ultimate RGB Heavyweight</p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="h4 fw-bold text-dark mb-0">₹1,24,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="Asus ROG Strix">
+                            <input type="hidden" name="price" value="124999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed">
+                            <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Laptop 6: Acer Nitro 5 -->
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
+                <div class="product-img-wrapper rounded-top-4">
+                    <img src="{% static 'images/nitro5.jfif' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Acer Nitro 5">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold mb-1">Acer Nitro 5</h5>
+                    <p class="text-muted small mb-3">Best Value Performance</p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="h4 fw-bold text-dark mb-0">₹68,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="Acer Nitro 5">
+                            <input type="hidden" name="price" value="68999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1593642632823-8f785ba67e45">
+                            <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Laptop 7: MSI Katana GF66 -->
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
+                <div class="product-img-wrapper rounded-top-4">
+                    <img src="{% static 'images/katanagf66.jfif' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="MSI Katana GF66">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold mb-1">MSI Katana GF66</h5>
+                    <p class="text-muted small mb-3">Sleek & Sharp Architecture</p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="h4 fw-bold text-dark mb-0">₹84,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="MSI Katana GF66">
+                            <input type="hidden" name="price" value="84999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1541807084-5c52b6b3adef">
+                            <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Laptop 8: Samsung Galaxy Book 4 -->
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
+                <div class="product-img-wrapper rounded-top-4">
+                    <img src="{% static 'images/galaxybook4.webp' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Samsung Galaxy Book 4">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold mb-1">Samsung Galaxy Book 4</h5>
+                    <p class="text-muted small mb-3">Ultra-Thin Ecosystem Companion</p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="h4 fw-bold text-dark mb-0">₹79,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="Samsung Galaxy Book 4">
+                            <input type="hidden" name="price" value="79999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1498050108023-c5249f4df085">
+                            <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Laptop 9: Microsoft Surface Laptop 5 -->
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
+                <div class="product-img-wrapper rounded-top-4">
+                    <img src="{% static 'images/surface5.jfif' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Microsoft Surface Laptop 5">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold mb-1">Microsoft Surface 5</h5>
+                    <p class="text-muted small mb-3">Premium Touch & Elegance</p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="h4 fw-bold text-dark mb-0">₹1,02,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
+                            <input type="hidden" name="name" value="Microsoft Surface Laptop 5">
+                            <input type="hidden" name="price" value="102999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1484788984921-03950022c9ef">
+                            <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock body %}

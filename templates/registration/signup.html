@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock title %}
+{% block body %}
+<style>.auth-card{max-width:520px;margin:25px auto;border:0;border-radius:20px;box-shadow:0 12px 35px rgba(0,0,0,.12)}.auth-card .form-control{height:46px;border-radius:10px}.auth-btn{border-radius:10px;padding:12px;font-weight:600}</style>
+<div class="card auth-card"><div class="card-body p-4 p-md-5"><h1 class="h3 fw-bold text-center mb-2">Create your NexCart account</h1><p class="text-muted text-center mb-4">Set a password, then verify your email to create the account.</p>
+{% if messages %}{% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>{% endfor %}{% endif %}
+<form method="post">{% csrf_token %}<div class="mb-3"><label for="email" class="form-label">Email address</label><input type="email" name="email" class="form-control" id="email" placeholder="you@gmail.com" required autofocus></div><div class="mb-3"><label for="password" class="form-label">Password</label><input type="password" name="password" class="form-control" id="password" minlength="8" autocomplete="new-password" required></div><div class="mb-3"><label for="password_confirm" class="form-label">Confirm password</label><input type="password" name="password_confirm" class="form-control" id="password_confirm" minlength="8" autocomplete="new-password" required></div><div class="mb-4"><label for="role" class="form-label">I want to join as</label><select name="role" id="role" class="form-select form-control" required><option value="buyer">Buyer — shop and track orders</option><option value="seller">Seller — post products and manage orders</option></select></div><button type="submit" class="btn btn-dark auth-btn w-100">Send verification code</button></form>
+<p class="text-center text-muted mt-4 mb-0">Already have an account? <a href="{% url 'login' %}">Login with email</a></p></div></div>
+{% endblock body %}

@@ -1,0 +1,251 @@
+{% extends "services/baseservices.html" %}
+
+{% block title %}Phone Service{% endblock title %}
+
+{% block servicetitle %}
+Phone Service
+{% endblock servicetitle %}
+
+{% block dropdown %}
+
+<select class="form-select">
+
+<option>Select Phone Model</option>
+
+<option>iPhone 11</option>
+<option>iPhone 11 Pro</option>
+<option>iPhone 11 Pro Max</option>
+<option>iPhone 12</option>
+<option>iPhone 12 Mini</option>
+<option>iPhone 12 Pro</option>
+<option>iPhone 12 Pro Max</option>
+<option>iPhone 13</option>
+<option>iPhone 13 Mini</option>
+<option>iPhone 13 Pro</option>
+<option>iPhone 13 Pro Max</option>
+<option>iPhone 14</option>
+<option>iPhone 14 Plus</option>
+<option>iPhone 14 Pro</option>
+<option>iPhone 14 Pro Max</option>
+<option>iPhone 15</option>
+<option>iPhone 15 Plus</option>
+<option>iPhone 15 Pro</option>
+<option>iPhone 15 Pro Max</option>
+
+<option>Samsung S20</option>
+<option>Samsung S20 Plus</option>
+<option>Samsung S20 Ultra</option>
+<option>Samsung S21</option>
+<option>Samsung S21 Ultra</option>
+<option>Samsung S22</option>
+<option>Samsung S22 Ultra</option>
+<option>Samsung S23</option>
+<option>Samsung S23 Ultra</option>
+<option>Samsung S24</option>
+<option>Samsung S24 Ultra</option>
+
+<option>OnePlus 8</option>
+<option>OnePlus 8 Pro</option>
+<option>OnePlus 9</option>
+<option>OnePlus 9 Pro</option>
+<option>OnePlus 10 Pro</option>
+<option>OnePlus 11</option>
+<option>OnePlus 12</option>
+<option>OnePlus Nord</option>
+<option>OnePlus Nord 2</option>
+<option>OnePlus Nord CE 3</option>
+
+<option>Realme GT</option>
+<option>Realme GT Neo</option>
+<option>Realme 9 Pro</option>
+<option>Realme 10 Pro</option>
+<option>Realme 11 Pro</option>
+<option>Realme Narzo 60</option>
+
+<option>Redmi Note 10</option>
+<option>Redmi Note 11</option>
+<option>Redmi Note 12</option>
+<option>Redmi Note 13</option>
+<option>Redmi K50</option>
+<option>Redmi K60</option>
+
+<option>Vivo V20</option>
+<option>Vivo V21</option>
+<option>Vivo V23</option>
+<option>Vivo V25</option>
+<option>Vivo X90</option>
+
+<option>Oppo F19</option>
+<option>Oppo F21</option>
+<option>Oppo Reno 8</option>
+<option>Oppo Reno 10</option>
+
+<option>Google Pixel 6</option>
+<option>Google Pixel 7</option>
+<option>Google Pixel 8</option>
+
+<option>Motorola Edge 30</option>
+<option>Motorola Edge 40</option>
+<option>Moto G54</option>
+
+<option>Nothing Phone 1</option>
+<option>Nothing Phone 2</option>
+
+<option>Poco X3</option>
+<option>Poco X5</option>
+<option>Poco F5</option>
+
+<option>Asus ROG Phone 5</option>
+<option>Asus ROG Phone 6</option>
+
+<option>Nokia G21</option>
+<option>Nokia X30</option>
+
+<option>Infinix Note 30</option>
+<option>Tecno Camon 20</option>
+
+<option>Huawei P50</option>
+<option>Huawei Mate 50</option>
+
+<option>Lenovo Legion</option>
+<option>Sony Xperia 1</option>
+
+<option>LG Velvet</option>
+<option>Micromax IN Note</option>
+
+<option>Lava Blaze</option>
+<option>IQOO Neo 7</option>
+
+<option>IQOO 11</option>
+<option>Honor 90</option>
+
+<option>Black Shark 5</option>
+<option>ZTE Nubia Red Magic</option>
+
+<option>HTC Desire 22</option>
+<option>Meizu 20</option>
+
+<option>Coolpad Cool 20</option>
+<option>Panasonic Eluga</option>
+
+<option>Alcatel 3X</option>
+<option>BlackBerry Key2</option>
+
+<option>Yu Yureka</option>
+<option>Karbonn Titanium</option>
+
+<option>Celkon Diamond</option>
+<option>Gionee Max</option>
+
+<option>LeEco Le Max</option>
+<option>Xiaomi 14</option>
+
+<option>Samsung A54</option>
+<option>Samsung M34</option>
+<option>Realme C55</option>
+
+<option>Oppo A78</option>
+<option>Vivo T2</option>
+
+<option>Redmi 13C</option>
+<option>Poco M6</option>
+
+</select>
+
+<div class="mt-4">
+
+<label class="form-label fw-bold">
+Select Problems
+</label>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Screen Broken</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Battery Issue</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Mic Not Working</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Speaker Problem</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Camera Issue</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Backpanel Broken</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Charging Problem</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Water Damage</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Power Button Not Working</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Face Unlock Issue</label>
+</div>
+
+</div>
+
+<div class="mt-4">
+
+<label class="form-label fw-bold">
+Your Location
+</label>
+
+<input type="text"
+       class="form-control"
+       placeholder="Enter your address">
+
+</div>
+
+<div class="mt-4">
+
+<label class="form-label fw-bold">
+Phone Number
+</label>
+
+<input type="text"
+       class="form-control"
+       placeholder="Enter your number">
+
+</div>
+
+<div class="mt-4">
+
+<label class="form-label fw-bold">
+Email Address
+</label>
+
+<input type="email"
+       class="form-control"
+       placeholder="Enter your email">
+
+</div>
+
+<div class="d-grid mt-4">
+
+{% endblock dropdown %}

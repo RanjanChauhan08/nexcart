@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Buy Phone{% endblock title %}
+
+{% block body %}
+<style>
+    /* Modern UI Enhancements */
+    .product-card {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.08) !important;
+        background: #ffffff;
+    }
+    .product-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08) !important;
+    }
+    .img-wrapper {
+        position: relative;
+        overflow: hidden;
+        background: #fdfdfd;
+    }
+    .product-img {
+        transition: transform 0.5s ease;
+    }
+    .product-card:hover .product-img {
+        transform: scale(1.03);
+    }
+    .btn-modern {
+        background: #111111;
+        color: #ffffff;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+        transition: all 0.2s ease;
+    }
+    .btn-modern:hover {
+        background: #333333;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .price-badge {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        display: inline-block;
+        padding: 6px 16px;
+        font-weight: 600;
+    }
+</style>
+
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+        <h1 class="fw-black display-5 text-dark mb-2" style="letter-spacing: -1px;">Explore Phones</h1>
+        <p class="text-muted last-updated">Pick your next premium device with seamless checkout</p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card product-card rounded-4 h-100 border-0 shadow-sm">
+                <div class="img-wrapper rounded-top-4 p-3">
+                    <img src="{% static 'images/iphone15promax.jpg' %}"
+                         class="card-img-top product-img"
+                         style="height:260px; width:100%; object-fit:contain;">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between text-center pt-0 px-4 pb-4">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-2 fs-5">iPhone 15 Pro Max</h5>
+                        <div class="price-badge rounded-pill mb-4 fs-5">₹1,59,999</div>
+                    </div>
+                    <form method="POST" action="{% url 'add_to_cart' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="name" value="iPhone 15 Pro Max">
+                        <input type="hidden" name="price" value="159999">
+                        <input type="hidden" name="image" value="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+                        <button type="submit" class="btn btn-modern rounded-pill w-100 py-2">Add To Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card product-card rounded-4 h-100 border-0 shadow-sm">
+                <div class="img-wrapper rounded-top-4 p-3">
+                    <img src="{% static 'images/samsungs24ultra.jpg' %}"
+                         class="card-img-top product-img"
+                         style="height:260px; width:100%; object-fit:contain;">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between text-center pt-0 px-4 pb-4">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-2 fs-5">Samsung Galaxy S24 Ultra</h5>
+                        <div class="price-badge rounded-pill mb-4 fs-5">₹1,29,999</div>
+                    </div>
+                    <form method="POST" action="{% url 'add_to_cart' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="name" value="Samsung Galaxy S24 Ultra">
+                        <input type="hidden" name="price" value="129999">
+                        <input type="hidden" name="image" value="https://images.unsplash.com/photo-1598327105666-5b89351aff97">
+                        <button type="submit" class="btn btn-modern rounded-pill w-100 py-2">Add To Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card product-card rounded-4 h-100 border-0 shadow-sm">
+                <div class="img-wrapper rounded-top-4 p-3">
+                    <img src="{% static 'images/oneplus' %}"
+                         class="card-img-top product-img"
+                         style="height:260px; width:100%; object-fit:contain;">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between text-center pt-0 px-4 pb-4">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-2 fs-5">OnePlus 12</h5>
+                        <div class="price-badge rounded-pill mb-4 fs-5">₹64,999</div>
+                    </div>
+                    <form method="POST" action="{% url 'add_to_cart' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="name" value="OnePlus 12">
+                        <input type="hidden" name="price" value="64999">
+                        <input type="hidden" name="image" value="https://images.unsplash.com/photo-1567581935884-3349723552ca">
+                        <button type="submit" class="btn btn-modern rounded-pill w-100 py-2">Add To Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card product-card rounded-4 h-100 border-0 shadow-sm">
+                <div class="img-wrapper rounded-top-4 p-3">
+                    <img src="{% static 'images/google10pro' %}"
+                         class="card-img-top product-img"
+                         style="height:260px; width:100%; object-fit:contain;">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between text-center pt-0 px-4 pb-4">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-2 fs-5">Google Pixel 10 Pro</h5>
+                        <div class="price-badge rounded-pill mb-4 fs-5">₹1,06,999</div>
+                    </div>
+                    <form method="POST" action="{% url 'add_to_cart' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="name" value="Google Pixel 8 Pro">
+                        <input type="hidden" name="price" value="106999">
+                        <input type="hidden" name="image" value="https://images.unsplash.com/photo-1510557880182-3f8f772f2b6d">
+                        <button type="submit" class="btn btn-modern rounded-pill w-100 py-2">Add To Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card product-card rounded-4 h-100 border-0 shadow-sm">
+                <div class="img-wrapper rounded-top-4 p-3">
+                    <img src="{% static 'images/xiaomi17promax' %}"
+                         class="card-img-top product-img"
+                         style="height:260px; width:100%; object-fit:contain;">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between text-center pt-0 px-4 pb-4">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-2 fs-5">Xiaomi 17 Pro Max</h5>
+                        <div class="price-badge rounded-pill mb-4 fs-5">₹89,999</div>
+                    </div>
+                    <form method="POST" action="{% url 'add_to_cart' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="name" value="Xiaomi 14 Ultra">
+                        <input type="hidden" name="price" value="89999">
+                        <input type="hidden" name="image" value="https://images.unsplash.com/photo-1580910051074-3eb694886505">
+                        <button type="submit" class="btn btn-modern rounded-pill w-100 py-2">Add To Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card product-card rounded-4 h-100 border-0 shadow-sm">
+                <div class="img-wrapper rounded-top-4 p-3">
+                    <img src="{% static 'images/4apro' %}"
+                         class="card-img-top product-img"
+                         style="height:260px; width:100%; object-fit:contain;">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between text-center pt-0 px-4 pb-4">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-2 fs-5">Nothing Phone 4a Pro</h5>
+                        <div class="price-badge rounded-pill mb-4 fs-5">₹44,999</div>
+                    </div>
+                    <form method="POST" action="{% url 'add_to_cart' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="name" value="Nothing Phone 2">
+                        <input type="hidden" name="price" value="44999">
+                        <input type="hidden" name="image" value="https://images.unsplash.com/photo-1585060544812-6b45742d762f">
+                        <button type="submit" class="btn btn-modern rounded-pill w-100 py-2">Add To Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card product-card rounded-4 h-100 border-0 shadow-sm">
+                <div class="img-wrapper rounded-top-4 p-3">
+                    <img src="{% static 'images/gt8' %}"
+                         class="card-img-top product-img"
+                         style="height:260px; width:100%; object-fit:contain;">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between text-center pt-0 px-4 pb-4">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-2 fs-5">Realme GT 8</h5>
+                        <div class="price-badge rounded-pill mb-4 fs-5">₹39,999</div>
+                    </div>
+                    <form method="POST" action="{% url 'add_to_cart' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="name" value="Realme GT 6">
+                        <input type="hidden" name="price" value="39999">
+                        <input type="hidden" name="image" value="https://images.unsplash.com/photo-1605236453806-6ff36851218e">
+                        <button type="submit" class="btn btn-modern rounded-pill w-100 py-2">Add To Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card product-card rounded-4 h-100 border-0 shadow-sm">
+                <div class="img-wrapper rounded-top-4 p-3">
+                    <img src="{% static 'images/x300' %}"
+                         class="card-img-top product-img"
+                         style="height:260px; width:100%; object-fit:contain;">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between text-center pt-0 px-4 pb-4">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-2 fs-5">Vivo X300</h5>
+                        <div class="price-badge rounded-pill mb-4 fs-5">₹94,999</div>
+                    </div>
+                    <form method="POST" action="{% url 'add_to_cart' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="name" value="Vivo X100 Pro">
+                        <input type="hidden" name="price" value="94999">
+                        <input type="hidden" name="image" value="https://images.unsplash.com/photo-1603899122634-f086ca5f5ddd">
+                        <button type="submit" class="btn btn-modern rounded-pill w-100 py-2">Add To Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card product-card rounded-4 h-100 border-0 shadow-sm">
+                <div class="img-wrapper rounded-top-4 p-3">
+                    <img src="{% static 'images/findx9' %}"
+                         class="card-img-top product-img"
+                         style="height:260px; width:100%; object-fit:contain;">
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between text-center pt-0 px-4 pb-4">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-2 fs-5">Oppo Find X9</h5>
+                        <div class="price-badge rounded-pill mb-4 fs-5">₹99,999</div>
+                    </div>
+                    <form method="POST" action="{% url 'add_to_cart' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="name" value="Oppo Find X7 Ultra">
+                        <input type="hidden" name="price" value="99999">
+                        <input type="hidden" name="image" value="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e">
+                        <button type="submit" class="btn btn-modern rounded-pill w-100 py-2">Add To Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock body %}

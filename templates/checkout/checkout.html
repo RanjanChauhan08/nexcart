@@ -1,0 +1,442 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout{% endblock title %}
+
+{% block body %}
+
+<style>
+
+body{
+    background:#f4f7fc;
+}
+
+/* Heading */
+
+.page-title{
+    font-size:40px;
+    font-weight:700;
+    color:#1f2937;
+}
+
+/* Product Card */
+
+.cart-card{
+    border:none;
+    border-radius:20px;
+    overflow:hidden;
+    background:#fff;
+    transition:.35s;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.cart-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 20px 40px rgba(0,0,0,.15);
+}
+
+.cart-card img{
+    height:250px;
+    object-fit:cover;
+}
+
+.product-name{
+    font-size:22px;
+    font-weight:600;
+}
+
+.price{
+    font-size:28px;
+    font-weight:700;
+    color:#16a34a;
+}
+
+.shipping{
+    color:#16a34a;
+    font-weight:600;
+}
+
+/* Buttons */
+
+.remove-btn{
+    border-radius:50px;
+    padding:8px 22px;
+    transition:.3s;
+}
+
+.remove-btn:hover{
+    transform:scale(1.05);
+}
+
+/* Summary Card */
+
+.summary-card{
+    background:white;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+}
+
+.summary-card h3{
+    font-weight:700;
+}
+
+.total-box{
+    background:#ecfdf5;
+    border-radius:15px;
+    padding:20px;
+    margin-bottom:25px;
+}
+
+.total-box h2{
+    color:#16a34a;
+    font-weight:700;
+}
+
+/* Form */
+
+.form-control{
+    height:55px;
+    border-radius:12px;
+}
+
+.form-control:focus{
+    box-shadow:none;
+    border-color:#0d6efd;
+}
+
+/* Button */
+
+.order-btn{
+    width:100%;
+    height:55px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(90deg,#16a34a,#22c55e);
+    color:white;
+    font-size:18px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.order-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 15px 30px rgba(34,197,94,.4);
+}
+
+/* Features */
+
+.features{
+    margin-top:25px;
+}
+
+.features p{
+    margin-bottom:10px;
+    font-weight:500;
+}
+
+/* Empty Cart */
+
+.empty-cart{
+    background:white;
+    border-radius:25px;
+    padding:60px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.empty-cart img{
+    width:180px;
+}
+
+.empty-cart h2{
+    font-weight:700;
+    margin-top:20px;
+}
+
+.shop-btn{
+    border-radius:50px;
+    padding:12px 35px;
+    margin-top:20px;
+}
+
+/* Responsive */
+
+@media(max-width:992px){
+
+.summary-card{
+    margin-top:30px;
+}
+
+.page-title{
+    font-size:32px;
+}
+
+}
+
+</style>
+
+<div class="container py-5">
+
+{% if cart %}
+
+<div class="d-flex justify-content-between align-items-center mb-5">
+
+<h1 class="page-title">
+🛒 Your Shopping Cart
+</h1>
+
+<span class="badge bg-success fs-6 px-3 py-2">
+{{ cart|length }} Item{{ cart|length|pluralize }}
+</span>
+
+</div>
+
+<div class="row">
+
+<!-- Products -->
+
+<div class="col-lg-8">
+
+<div class="row g-4">
+
+{% for item in cart %}
+
+<div class="col-md-6">
+
+<div class="card cart-card h-100">
+
+<img src="{{ item.image }}" class="card-img-top">
+
+<div class="card-body text-center">
+
+<h4 class="product-name">
+{{ item.name }}
+</h4>
+
+<p class="text-muted mb-2">
+Sold by {{ item.seller_name|default:"NexCart" }}
+</p>
+
+<h3 class="price">
+₹{{ item.price }}
+</h3>
+
+<p class="shipping">
+🚚 Free Delivery
+</p>
+
+<a href="{% url 'remove_from_cart' forloop.counter0 %}"
+class="btn btn-outline-danger remove-btn">
+
+Remove
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+<!-- Summary -->
+
+<div class="col-lg-4">
+
+<div class="summary-card sticky-top" style="top:100px;">
+
+<h3 class="mb-4">
+Order Summary
+</h3>
+
+<div class="total-box">
+
+<h5>Total Amount</h5>
+
+<h2>
+₹{{ total }}
+</h2>
+
+<p class="text-muted mb-0">
+Inclusive of all taxes
+</p>
+
+</div>
+
+<form method="POST" action="{% url 'place_order' %}">
+
+{% csrf_token %}
+
+<div class="mb-3">
+
+<input
+type="text"
+class="form-control"
+name="name"
+placeholder="👤 Full Name"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<input
+type="text"
+class="form-control"
+name="address"
+placeholder="📍 Delivery Address"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<input
+type="text"
+class="form-control"
+name="postal_code"
+id="postal-code"
+placeholder="6-digit PIN code"
+inputmode="numeric"
+pattern="[0-9]{6}"
+maxlength="6"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<input
+type="text"
+class="form-control"
+name="city"
+id="pin-locality"
+placeholder="City and state will be filled from your PIN code"
+readonly
+required>
+
+<small class="text-muted" id="pin-feedback">PIN code is required to confirm your delivery locality.</small>
+
+</div>
+
+<div class="mb-4">
+
+<input
+type="text"
+class="form-control"
+name="phone"
+placeholder="📞 Phone Number"
+required>
+
+</div>
+
+<button type="submit" class="order-btn">
+
+Place Order →
+
+</button>
+
+</form>
+
+<script>
+(() => {
+    const pinInput = document.getElementById('postal-code');
+    const localityInput = document.getElementById('pin-locality');
+    const feedback = document.getElementById('pin-feedback');
+    const lookupUrl = "{% url 'postal_code_lookup' '000000' %}";
+
+    async function lookUpPin() {
+        const pin = pinInput.value.replace(/\D/g, '').slice(0, 6);
+        pinInput.value = pin;
+        localityInput.value = '';
+        if (pin.length !== 6) {
+            feedback.textContent = 'Enter a valid 6-digit Indian PIN code.';
+            return;
+        }
+        feedback.textContent = 'Checking delivery locality…';
+        try {
+            const response = await fetch(lookupUrl.replace('000000', pin));
+            const data = await response.json();
+            if (!response.ok || !data.valid) throw new Error();
+            localityInput.value = data.delivery_city;
+            feedback.textContent = `Delivery locality confirmed: ${data.locality}, ${data.state}.`;
+        } catch {
+            feedback.textContent = 'We could not verify this PIN code. Check it and try again.';
+        }
+    }
+    pinInput.addEventListener('input', lookUpPin);
+    pinInput.addEventListener('blur', lookUpPin);
+})();
+</script>
+
+<div class="features">
+
+<hr>
+
+<p>
+✅ Secure Payment
+</p>
+
+<p>
+🚚 Free Shipping
+</p>
+
+<p>
+🔄 Easy Returns
+</p>
+
+<p>
+⭐ Trusted by Thousands
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% else %}
+
+<div class="row justify-content-center">
+
+<div class="col-lg-6">
+
+<div class="empty-cart text-center">
+
+<img src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png">
+
+<h2>
+Your Cart is Empty
+</h2>
+
+<p class="text-muted mt-3">
+
+Looks like you haven't added any products yet.
+
+</p>
+
+<a href="{% url 'buynow' %}"
+
+class="btn btn-dark btn-lg shop-btn">
+
+Continue Shopping
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+{% endblock body %}

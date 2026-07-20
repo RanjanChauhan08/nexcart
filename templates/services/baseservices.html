@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+
+{% block title %}
+Book a Repair Service
+{% endblock title %}
+
+{% block body %}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #eef2ff, #f8fafc, #ecfeff);
+    }
+
+    /* Hero */
+    .service-hero {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        border-radius: 25px;
+        padding: 50px;
+        margin: 40px 0;
+        box-shadow: 0 20px 45px rgba(37, 99, 235, .25);
+    }
+
+    .service-hero h1 {
+        font-size: 45px;
+        font-weight: 700;
+    }
+
+    .service-hero p {
+        font-size: 18px;
+        opacity: .9;
+    }
+
+    /* Form Card */
+    .form-card {
+        background: white;
+        border-radius: 25px;
+        padding: 40px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, .08);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .form-select,
+    .form-control {
+        height: 55px;
+        border-radius: 12px;
+    }
+
+    textarea.form-control {
+        height: auto;
+    }
+
+    .form-select:focus,
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #2563eb;
+    }
+
+    /* Problems */
+    .problem-box {
+        background: #f8fafc;
+        padding: 25px;
+        border-radius: 18px;
+        margin-top: 25px;
+    }
+
+    .form-check {
+        margin-bottom: 12px;
+    }
+
+    /* Button */
+    .submit-btn {
+        width: 100%;
+        height: 55px;
+        border: none;
+        border-radius: 50px;
+        background: linear-gradient(90deg, #2563eb, #3b82f6);
+        color: white;
+        font-size: 18px;
+        font-weight: 600;
+        transition: .3s;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(37, 99, 235, .35);
+    }
+
+    /* Features */
+    .feature {
+        text-align: center;
+        padding: 25px;
+    }
+
+    .feature h3 {
+        font-size: 35px;
+    }
+
+    .feature p {
+        margin-top: 10px;
+        color: #64748b;
+    }
+</style>
+
+<div class="container">
+
+    <div class="service-hero text-center">
+        <h1>
+            {% block servicetitle %}
+            Device Repair Service
+            {% endblock servicetitle %}
+        </h1>
+        <p>
+            Professional repair services with genuine parts and certified technicians.
+        </p>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="feature">
+                <h3>🚚</h3>
+                <h5>Free Pickup</h5>
+                <p>Doorstep pickup available.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature">
+                <h3>🛡️</h3>
+                <h5>Warranty</h5>
+                <p>Up to 1 Year Service Warranty.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature">
+                <h3>⚡</h3>
+                <h5>Quick Repair</h5>
+                <p>Same day repair for most issues.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="form-card">
+                <form id="repairForm" method="POST" action="{% url 'laptopservices' %}">
+                    {% csrf_token %}
+
+                    {% block dropdown %}
+                    <div class="mb-3">
+                        <label for="model" class="form-label">Device Model *</label>
+                        <input type="text" class="form-control" id="model" name="model" placeholder="e.g., iPhone 14 Pro, Samsung S23" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email Address *</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Phone Number *</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="e.g., +1234567890" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="location" class="form-label">Location *</label>
+                        <input type="text" class="form-control" id="location" name="location" placeholder="Enter your full address or pickup location" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="general_description" class="form-label">General Description of the Issue <span class="text-muted fw-normal">(Max 500 words)</span></label>
+                        <textarea class="form-control" id="general_description" name="general_description" rows="4" placeholder="Please write any additional details or context about your device issue here..."></textarea>
+                        <div id="general_word_error" class="text-danger small mt-1" style="display: none;">Your general description exceeds the limit of 500 words!</div>
+                    </div>
+
+                    <div class="problem-box">
+                        <label class="form-label d-block mb-3">Select Problem(s) * <span class="text-muted fw-normal">(Select at least one)</span></label>
+                        
+                        <div class="form-check">
+                            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="screen" id="prob1">
+                            <label class="form-check-label" for="prob1">Screen Damage / Broken Glass</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="battery" id="prob2">
+                            <label class="form-check-label" for="prob2">Battery Replacement / Charging Issues</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="water" id="prob3">
+                            <label class="form-check-label" for="prob3">Water / Liquid Damage</label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input problem-checkbox" type="checkbox" name="problems" value="other" id="prob_other" onchange="toggleOtherTextBox()">
+                            <label class="form-check-label" for="prob_other">Other Problem</label>
+                        </div>
+
+                        <div class="mt-4" id="other_problem_wrapper" style="display:none;">
+                            <label for="other_details" class="form-label fw-bold">
+                                Describe Your Issue
+                                <span class="text-muted fw-normal">(Maximum 500 words)</span>
+                            </label>
+                            <textarea class="form-control" id="other_details" name="other_details" rows="6" placeholder="Explain your issue in detail."></textarea>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-2">
+                            <small class="text-muted">
+                                Be as descriptive as possible.
+                            </small>
+                            <small id="wordCounter" class="text-primary">
+                                0 / 500 words
+                            </small>
+                        </div>
+
+                        <div id="word_count_error" class="text-danger mt-2" style="display:none;">
+                            Maximum 500 words allowed.
+                        </div>
+                    </div>
+                    {% endblock dropdown %}
+
+                    <button type="submit" class="submit-btn mt-5">
+                        Book Service
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function toggleOtherTextBox() {
+    const otherCheckbox = document.getElementById('prob_other');
+    const wrapper = document.getElementById('other_problem_wrapper');
+    const textarea = document.getElementById('other_details');
+
+    if (!otherCheckbox || !wrapper || !textarea) {
+        return;
+    }
+
+    if (otherCheckbox.checked) {
+        wrapper.style.display = 'block';
+        textarea.setAttribute('required', 'required');
+        textarea.focus();
+    } else {
+        wrapper.style.display = 'none';
+        textarea.removeAttribute('required');
+        textarea.value = '';
+    }
+}
+
+const repairForm = document.getElementById('repairForm');
+
+if (repairForm) {
+    repairForm.addEventListener('submit', function(e) {
+        let valid = true;
+
+        const checkboxes = document.querySelectorAll('.problem-checkbox');
+        let isChecked = false;
+
+        checkboxes.forEach(cb => {
+            if (cb.checked) {
+                isChecked = true;
+            }
+        });
+
+        if (checkboxes.length > 0 && !isChecked) {
+            e.preventDefault();
+            alert('Please select at least one problem option before submitting.');
+            return false;
+        }
+
+        const generalDescription = document.getElementById('general_description');
+        const generalWordError = document.getElementById('general_word_error');
+
+        if (generalDescription) {
+            const generalText = generalDescription.value.trim();
+            const generalWordCount = generalText ? generalText.split(/\s+/).length : 0;
+
+            if (generalWordCount > 500) {
+                e.preventDefault();
+
+                if (generalWordError) {
+                    generalWordError.style.display = 'block';
+                }
+
+                alert('Your General Description is too long! Please keep it under 500 words.');
+                valid = false;
+            } else {
+                if (generalWordError) {
+                    generalWordError.style.display = 'none';
+                }
+            }
+        }
+
+        const otherCheckbox = document.getElementById('prob_other');
+        const otherDetails = document.getElementById('other_details');
+        const wordCountError = document.getElementById('word_count_error');
+
+        if (otherCheckbox && otherCheckbox.checked && otherDetails) {
+            const customText = otherDetails.value.trim();
+
+            if (customText === '') {
+                e.preventDefault();
+                alert('You selected "Other Problem". Please type a message describing your custom issue.');
+                otherDetails.focus();
+                return false;
+            }
+
+            const otherWordCount = customText ? customText.split(/\s+/).length : 0;
+
+            if (otherWordCount > 500) {
+                e.preventDefault();
+
+                if (wordCountError) {
+                    wordCountError.style.display = 'block';
+                }
+
+                alert('Your custom problem description is too long! Please keep it under 500 words.');
+                valid = false;
+            } else {
+                if (wordCountError) {
+                    wordCountError.style.display = 'none';
+                }
+            }
+        }
+
+        return valid;
+    });
+}
+</script>
+
+{% endblock body %}

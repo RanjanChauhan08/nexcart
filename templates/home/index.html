@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}NexCart | Next-Gen Devices & Expert Service{% endblock title %}
+
+{% block body %}
+<!-- Ultra-Modern UI Design Engine Styles -->
+<style>
+    :root {
+        --subtle-glass: rgba(255, 255, 255, 0.03);
+        --border-glass: rgba(255, 255, 255, 0.08);
+    }
+    .hero-canvas {
+        background: radial-gradient(circle at 80% 20%, #1a1e22 0%, #0b0d0f 100%);
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+    }
+    .glass-pill {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--border-glass);
+        color: #e2e8f0;
+        letter-spacing: 0.15em;
+        font-size: 0.75rem;
+    }
+    .interactive-gate {
+        background: #0f1113;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 32px;
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .interactive-gate:hover {
+        transform: translateY(-8px);
+        border-color: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 2rem 4rem rgba(0,0,0,0.4);
+    }
+    .gate-light {
+        background: #f8f9fa;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+    .gate-light:hover {
+        border-color: rgba(0, 0, 0, 0.12);
+        box-shadow: 0 2rem 4rem rgba(0,0,0,0.08);
+    }
+    .arrow-icon-circle {
+        width: 52px;
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.4s ease;
+    }
+    .interactive-gate:hover .arrow-icon-circle {
+        background: #ffffff !important;
+        color: #000000 !important;
+        transform: rotate(-45deg);
+    }
+    .gate-light:hover .arrow-icon-circle {
+        background: #000000 !important;
+        color: #ffffff !important;
+        transform: rotate(-45deg);
+    }
+    .spotlight-card {
+        border-radius: 24px;
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .spotlight-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 1.5rem 3.5rem rgba(0,0,0,0.06);
+    }
+    .floating-graphic {
+        animation: floatAnimation 6s ease-in-out infinite;
+    }
+    @keyframes floatAnimation {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-15px) rotate(3deg); }
+    }
+</style>
+
+<!-- 1. Immersive Cinematic Hero -->
+<div class="hero-canvas text-white position-relative overflow-hidden">
+    <div class="container position-relative z-1 py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7 text-center text-lg-start">
+                <span class="badge glass-pill rounded-pill px-3 py-2 text-uppercase fw-bold mb-4 d-inline-block">
+                    <span class="text-success me-1">●</span> Retail &amp; Certified Care Ecosystem
+                </span>
+                <h1 class="display-3 fw-black tracking-tight mb-3 text-white" style="font-weight: 800; line-height: 1.15;">
+                    The Future of Mobile <br class="d-none d-md-inline"><span class="text-muted">Is Now Seamless.</span>
+                </h1>
+                <p class="text-secondary lead mb-5 fs-5 mx-auto mx-lg-0" style="max-width: 540px; color: #94a3b8 !important;">
+                    NexCart pairs curation of flagship devices with medical-grade hardware diagnostics. Welcome to effortless upgrades and flawless repairs.
+                </p>
+                <div class="d-flex justify-content-center justify-content-lg-start gap-3 flex-wrap">
+                    <a href="{% url 'buynow' %}" class="btn btn-light rounded-pill px-4 py-3 fw-bold shadow-sm">Explore Collection</a>
+                    <a href="{% url 'services' %}" class="btn btn-outline-secondary rounded-pill px-4 py-3 fw-medium text-white border-secondary">About Our Services</a>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-flex justify-content-center">
+                <div class="floating-graphic opacity-25">
+                    <i class="bi bi-cpu text-white" style="font-size: 14rem;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Minimal Tech Pillars (Asymmetric Grid) -->
+<div class="container my-5 py-5">
+    <div class="row g-4">
+        <!-- Pillar One: Store -->
+        <div class="col-lg-6">
+            <div class="card interactive-gate gate-light p-5 h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <span class="text-success fw-bold text-uppercase tracking-widest small">01 / DISCOVER</span>
+                    <h2 class="fw-bold display-6 mt-3 mb-4 text-dark">Acquire Next-Gen Premium Devices</h2>
+                    <p class="text-muted mb-0" style="max-width: 420px; font-size: 0.95rem; line-height: 1.6;">
+                        Step into pristine performance. Explore completely authenticated brand new arrivals and verified upgrades backed up with comprehensive store-protection warranties.
+                    </p>
+                </div>
+                <div class="pt-5 d-flex align-items-center justify-content-between mt-auto">
+                    <span class="fs-2 text-dark opacity-70"><i class="bi bi-phone-vibrate"></i></span>
+                    <a href="{% url 'buynow' %}" class="arrow-icon-circle bg-dark text-white shadow-sm text-decoration-none">
+                        <i class="bi bi-arrow-right d-flex fs-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pillar Two: Repairs -->
+        <div class="col-lg-6">
+            <div class="card interactive-gate text-white p-5 h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <span class="text-success fw-bold text-uppercase tracking-widest small">02 / INTERVENE</span>
+                    <h2 class="fw-bold display-6 mt-3 mb-4 text-white">Advanced Lab Grade Micro-Services</h2>
+                    <p class="text-secondary mb-0" style="max-width: 420px; font-size: 0.95rem; line-height: 1.6; color: #94a3b8 !important;">
+                        Breathe life back into your gear. From precise logic board soldering down to simple display component renewals managed entirely in premium static-shield cleanrooms.
+                    </p>
+                </div>
+                <div class="pt-5 d-flex align-items-center justify-content-between mt-auto">
+                    <span class="fs-2 text-white-50"><i class="bi bi-motherboard"></i></span>
+                    <a href="{% url 'about' %}" class="arrow-icon-circle bg-white text-dark shadow-sm text-decoration-none">
+                        <i class="bi bi-arrow-right d-flex fs-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 3. Minimalist Trust Infrastructure -->
+<div class="py-5 bg-light border-top border-bottom">
+    <div class="container py-2">
+        <div class="row g-4 justify-content-center text-center">
+            <div class="col-6 col-md-3">
+                <h6 class="fw-bold text-dark text-uppercase tracking-wider small mb-2">Inventory Authentication</h6>
+                <p class="text-muted small mb-0">100% Genuine Pipeline</p>
+            </div>
+            <div class="col-6 col-md-3">
+                <h6 class="fw-bold text-dark text-uppercase tracking-wider small mb-2">Express Diagnostics</h6>
+                <p class="text-muted small mb-0">Same-day Core Repairs</p>
+            </div>
+            <div class="col-6 col-md-3">
+                <h6 class="fw-bold text-dark text-uppercase tracking-wider small mb-2">Escrow Protected Transit</h6>
+                <p class="text-muted small mb-0">Fully Insured Deliveries</p>
+            </div>
+            <div class="col-6 col-md-3">
+                <h6 class="fw-bold text-dark text-uppercase tracking-wider small mb-2">Extended Coverage</h6>
+                <p class="text-muted small mb-0">Guaranteed Service Warranty</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 4. Curated Flagship Showcase -->
+<div class="container my-5 py-5">
+    <div class="d-flex align-items-end justify-content-between mb-5">
+        <div>
+            <span class="text-success fw-bold text-uppercase small tracking-widest">Live Spotlights</span>
+            <h2 class="fw-bold display-6 mt-1 mb-0">Curated Configurations</h2>
+        </div>
+        <a href="{% url 'buynow' %}" class="btn btn-dark rounded-pill px-4 btn-sm fw-medium d-none d-sm-inline-block">View Full Catalog</a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Device Item 1 -->
+        <div class="col-md-4">
+            <div class="card spotlight-card p-4 border-0 h-100 d-flex flex-column">
+                <div class="rounded-4 bg-light d-flex align-items-center justify-content-center mb-4" style="height: 240px;">
+                    <i class="bi bi-phone text-muted opacity-25" style="font-size: 4.5rem;"></i>
+                </div>
+                <div class="d-flex align-items-start justify-content-between mb-2">
+                    <h5 class="fw-bold text-dark mb-0">iPhone 15 Pro</h5>
+                    <span class="text-muted small font-monospace">Titanium</span>
+                </div>
+                <p class="text-muted small mb-4">A17 Pro processing power framework.</p>
+                <div class="d-flex align-items-center justify-content-between mt-auto pt-2">
+                    <span class="fs-5 fw-bold text-dark">₹1,29,900</span>
+                    <button type="button" class="btn btn-outline-dark btn-sm rounded-pill px-3 py-2 fw-medium" data-bs-toggle="modal" data-bs-target="#iphoneModal">View Specs</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Device Item 2 -->
+        <div class="col-md-4">
+            <div class="card spotlight-card p-4 border-0 h-100 d-flex flex-column">
+                <div class="rounded-4 bg-light d-flex align-items-center justify-content-center mb-4" style="height: 240px;">
+                    <i class="bi bi-phone-fill text-muted opacity-25" style="font-size: 4.5rem;"></i>
+                </div>
+                <div class="d-flex align-items-start justify-content-between mb-2">
+                    <h5 class="fw-bold text-dark mb-0">Galaxy S24 Ultra</h5>
+                    <span class="text-muted small font-monospace">Ecosystem</span>
+                </div>
+                <p class="text-muted small mb-4">Native architecture Galaxy AI workflow embedded.</p>
+                <div class="d-flex align-items-center justify-content-between mt-auto pt-2">
+                    <span class="fs-5 fw-bold text-dark">₹1,24,999</span>
+                    <button type="button" class="btn btn-outline-dark btn-sm rounded-pill px-3 py-2 fw-medium" data-bs-toggle="modal" data-bs-target="#galaxyModal">View Specs</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Device Item 3 -->
+        <div class="col-md-4">
+            <div class="card spotlight-card p-4 border-0 h-100 d-flex flex-column">
+                <div class="rounded-4 bg-light d-flex align-items-center justify-content-center mb-4" style="height: 240px;">
+                    <i class="bi bi-tablet-landscape text-muted opacity-25" style="font-size: 4.5rem;"></i>
+                </div>
+                <div class="d-flex align-items-start justify-content-between mb-2">
+                    <h5 class="fw-bold text-dark mb-0">iPad Pro 12.9</h5>
+                    <span class="text-muted small font-monospace">M2 Silicon</span>
+                </div>
+                <p class="text-muted small mb-4">Liquid Retina XDR extreme display output.</p>
+                <div class="d-flex align-items-center justify-content-between mt-auto pt-2">
+                    <span class="fs-5 fw-bold text-dark">₹1,12,999</span>
+                    <button type="button" class="btn btn-outline-dark btn-sm rounded-pill px-3 py-2 fw-medium" data-bs-toggle="modal" data-bs-target="#ipadModal">View Specs</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== FIXED MODAL OVERLAYS (data-bs-dismiss FIXED) ==================== -->
+
+<!-- iPhone 15 Pro Modal -->
+<div class="modal fade" id="iphoneModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header border-0 bg-light rounded-top-4 p-4">
+                <h5 class="modal-title fw-bold text-dark">iPhone 15 Pro Technical Specs</h5>
+                <!-- FIXED ATTRIBUTE HERE -->
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <table class="table table-sm table-borderless mb-0">
+                    <tbody>
+                        <tr><td class="text-muted fw-medium py-2">Processor</td><td class="text-dark fw-bold py-2">A17 Pro Chip</td></tr>
+                        <tr><td class="text-muted fw-medium py-2">Chassis Material</td><td class="text-dark fw-bold py-2">Aerospace-grade Titanium</td></tr>
+                        <tr><td class="text-muted fw-medium py-2">Main Camera System</td><td class="text-dark fw-bold py-2">48MP Pro System + 3x/5x Telephoto</td></tr>
+                        <tr><td class="text-muted fw-medium py-2">Connection Bus</td><td class="text-dark fw-bold py-2">USB-C (Supports USB 3 Speeds)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Galaxy S24 Ultra Modal -->
+<div class="modal fade" id="galaxyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header border-0 bg-light rounded-top-4 p-4">
+                <h5 class="modal-title fw-bold text-dark">Galaxy S24 Ultra Technical Specs</h5>
+                <!-- FIXED ATTRIBUTE HERE -->
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <table class="table table-sm table-borderless mb-0">
+                    <tbody>
+                        <tr><td class="text-muted fw-medium py-2">Processor</td><td class="text-dark fw-bold py-2">Snapdragon 8 Gen 3 for Galaxy</td></tr>
+                        <tr><td class="text-muted fw-medium py-2">AI Capabilities</td><td class="text-dark fw-bold py-2">Live Translate, Circle to Search</td></tr>
+                        <tr><td class="text-muted fw-medium py-2">Optics</td><td class="text-dark fw-bold py-2">200MP Wide-angle / Quad Telephoto</td></tr>
+                        <tr><td class="text-muted fw-medium py-2">Stylus Integration</td><td class="text-dark fw-bold py-2">Embedded Bluetooth S-Pen</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- iPad Pro Modal -->
+<div class="modal fade" id="ipadModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header border-0 bg-light rounded-top-4 p-4">
+                <h5 class="modal-title fw-bold text-dark">iPad Pro 12.9 Technical Specs</h5>
+                <!-- FIXED ATTRIBUTE HERE -->
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <table class="table table-sm table-borderless mb-0">
+                    <tbody>
+                        <tr><td class="text-muted fw-medium py-2">Processor</td><td class="text-dark fw-bold py-2">Apple M2 Silicon Architecture</td></tr>
+                        <tr><td class="text-muted fw-medium py-2">Display tech</td><td class="text-dark fw-bold py-2">Liquid Retina XDR Mini-LED</td></tr>
+                        <tr><td class="text-muted fw-medium py-2">Pro Audio Systems</td><td class="text-dark fw-bold py-2">4 Studio Speaker Matrix</td></tr>
+                        <tr><td class="text-muted fw-medium py-2">Peripheral Ecosystem</td><td class="text-dark fw-bold py-2">Apple Pencil Gen 2 &amp; Magic Keyboard</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

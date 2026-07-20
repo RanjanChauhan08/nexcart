@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}About Us | NexCart{% endblock title %}
+
+{% block body %}
+<!-- Custom Modern UI Styles -->
+<style>
+    .feature-icon-box {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(33, 37, 41, 0.05);
+        border-radius: 16px;
+        transition: all 0.3s ease;
+    }
+    .hover-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.08) !important;
+    }
+    .hover-card:hover .feature-icon-box {
+        background: #212529;
+        color: #ffffff !important;
+    }
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #212529;
+    }
+</style>
+
+<!-- Modern Hero Banner -->
+<div class="bg-dark text-white py-5 position-relative overflow-hidden mb-5">
+    <div class="position-absolute top-50 start-50 translate-middle opacity-10" style="font-size: 12rem; font-weight: 900; pointer-events: none; white-space: nowrap; color: rgba(255,255,255,0.03)">
+        NEXCART
+    </div>
+    <div class="container position-relative z-1 py-4 text-center">
+        <span class="text-uppercase tracking-wider small fw-bold text-muted mb-2 d-inline-block">Discover Our Story</span>
+        <h1 class="display-4 fw-extrabold mb-3">Connecting You to Next-Gen Mobility</h1>
+        <p class="text-muted lead mx-auto mb-0" style="max-width: 650px;">
+            We don’t just sell smartphones—we ensure they keep running smoothly. Welcome to the complete mobile ecosystem.
+        </p>
+    </div>
+</div>
+
+<!-- Core Overview Section -->
+<div class="container my-5 py-3">
+    <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+            <span class="text-success fw-bold text-uppercase small tracking-wide">Who We Are</span>
+            <h2 class="fw-bold display-6 mt-2 mb-4">Your Ultimate Destination for Devices & Care</h2>
+            <p class="text-muted">
+                Founded with a vision to streamline how people buy and maintain their tech, <strong>NexCart</strong> bridges the gap between premium retail and high-tier device service. Whether you are hunting for the absolute latest flagship smartphone or looking for certified repair technicians to revive your current device, we've got you covered.
+            </p>
+            <p class="text-muted mb-4">
+                We believe in a sustainable, high-performance approach to technology. That means authentic hardware, transparent pricing, and turnaround times that respect your busy life.
+            </p>
+            
+            <!-- Quick Stats Row -->
+            <div class="row g-4 pt-3 border-top">
+                <div class="col-6 col-sm-4">
+                    <div class="stat-number">50k+</div>
+                    <div class="small text-muted fw-medium">Devices Sold</div>
+                </div>
+                <div class="col-6 col-sm-4">
+                    <div class="stat-number">99.2%</div>
+                    <div class="small text-muted fw-medium">Success Rate</div>
+                </div>
+                <div class="col-12 col-sm-4">
+                    <div class="stat-number">24/7</div>
+                    <div class="small text-muted fw-medium">Expert Support</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Value Columns -->
+        <div class="col-lg-6">
+            <div class="row g-4">
+                <!-- Dual Pillar 1 -->
+                <div class="col-12">
+                    <div class="p-4 rounded-4 bg-light border border-light shadow-sm d-flex gap-4">
+                        <div class="fs-2 text-dark pt-1">
+                            <i class="bi bi-phone"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-2">Premium Retail Hub</h4>
+                            <p class="text-muted mb-0 small">Curated premium inventory featuring top-tier global smartphone brands. Fully authenticated and packaged with complete official brand protection warranties.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Dual Pillar 2 -->
+                <div class="col-12">
+                    <div class="p-4 rounded-4 bg-light border border-light shadow-sm d-flex gap-4">
+                        <div class="fs-2 text-dark pt-1">
+                            <i class="bi bi-tools"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-2">Precision Device Services</h4>
+                            <p class="text-muted mb-0 small">From instantaneous display changes to micro-soldering component repairs. Our fully diagnostics-equipped workshop handles devices with supreme care.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr class="container opacity-10 my-5">
+
+<!-- Why Choose Us Grid Section -->
+<div class="container my-5 pb-5">
+    <div class="text-center mb-5">
+        <span class="text-success fw-bold text-uppercase small tracking-wide">The NexCart Advantage</span>
+        <h2 class="fw-bold display-6 mt-1">Engineered Around Trust</h2>
+    </div>
+
+    <div class="row g-4">
+        <!-- Feature 1 -->
+        <div class="col-md-4">
+            <div class="card h-100 p-4 border-0 shadow-sm rounded-4 hover-card bg-white">
+                <div class="feature-icon-box text-dark mb-4 fs-3">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h4 class="fw-bold mb-3">100% Genuine Items</h4>
+                <p class="text-muted small mb-0">Every smartphone, charger, and spare replacement component utilized in our chain is certified original directly from brand pipelines.</p>
+            </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="col-md-4">
+            <div class="card h-100 p-4 border-0 shadow-sm rounded-4 hover-card bg-white">
+                <div class="feature-icon-box text-dark mb-4 fs-3">
+                    <i class="bi bi-lightning-charge"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Lightning Repairs</h4>
+                <p class="text-muted small mb-0">We understand tech dependencies. Over 75% of basic hardware service routines are evaluated, fixed, and returned within the exact same day.</p>
+            </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="col-md-4">
+            <div class="card h-100 p-4 border-0 shadow-sm rounded-4 hover-card bg-white">
+                <div class="feature-icon-box text-dark mb-4 fs-3">
+                    <i class="bi bi-credit-card"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Transparent Billing</h4>
+                <p class="text-muted small mb-0">No surprise hidden technician charges or markups. You get completely transparent itemized breakdowns before our tools ever touch your device.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Clean Modern Call To Action Area -->
+<div class="container my-5">
+    <div class="bg-light rounded-5 p-5 text-center shadow-sm border">
+        <h3 class="fw-bold mb-3">Experiencing Device Issues or Ready for an Upgrade?</h3>
+        <p class="text-muted mx-auto mb-4" style="max-width: 550px;">Drop by our storefront today for instant diagnostics, or scan through our premium live device shop catalogs.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="/buynow" class="btn btn-dark rounded-pill px-4 py-2 fw-medium">Browse Collection</a>
+            <a href="/services" class="btn btn-outline-dark rounded-pill px-4 py-2 fw-medium">Book a Service</a>
+        </div>
+    </div>
+</div>
+{% endblock body %}

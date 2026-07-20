@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Buy Tablet{% endblock title %}
+
+{% block body %}
+<style>
+    .product-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1) !important;
+    }
+    .img-container {
+        height: 220px;
+        background: #fdfdfd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .img-container img {
+        max-height: 80%;
+        max-width: 80%;
+        object-fit: contain;
+    }
+    /* Fixed modern hero background accent text */
+    .hero-bg-text {
+        font-size: 10rem; 
+        font-weight: 900; 
+        pointer-events: none; 
+        white-space: nowrap;
+        color: rgba(255, 255, 255, 0.04); /* Subtle, elegant transparency */
+        user-select: none;
+        z-index: 0;
+    }
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+</style>
+
+<div class="bg-dark text-white py-5 mb-5 text-center position-relative overflow-hidden">
+    <div class="position-absolute top-50 start-50 translate-middle hero-bg-text">
+        TABLETS
+    </div>
+    <div class="container hero-content py-3">
+        <h1 class="display-5 fw-bold tracking-tight mb-2">Explore Next-Gen Tablets</h1>
+        <p class="text-muted lead mx-auto mb-0" style="max-width: 600px;">Find the perfect balance of productivity, creativity, and power with our premium selection.</p>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row g-4">
+
+        <div class="col-sm-6 col-md-4">
+            <div class="card product-card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                <div class="img-container">
+                    <img src="{% static "images/ipadpro12'6.jfif" %}" alt="iPad Pro 12.9">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold text-dark mb-1">iPad Pro 12.9</h5>
+                    <p class="text-muted small mb-3">Apple Ecosystem</p>
+                    <div class="d-flex align-items-center justify-content-between mt-auto pt-2">
+                        <span class="fs-4 fw-bold text-success">₹1,12,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}" class="m-0">{% csrf_token %}
+                            <input type="hidden" name="name" value="iPad Pro 12.9">
+                            <input type="hidden" name="price" value="112999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0">
+                            <button type="submit" class="btn btn-dark btn-sm rounded-pill px-3 py-2 fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4">
+            <div class="card product-card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                <div class="img-container">
+                    <img src="{% static "images/tablets9.jfif" %}" alt="Samsung Galaxy Tab S9">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold text-dark mb-1">Samsung Galaxy Tab S9</h5>
+                    <p class="text-muted small mb-3">Ultimate Android Power</p>
+                    <div class="d-flex align-items-center justify-content-between mt-auto pt-2">
+                        <span class="fs-4 fw-bold text-success">₹84,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}" class="m-0">{% csrf_token %}
+                            <input type="hidden" name="name" value="Samsung Galaxy Tab S9">
+                            <input type="hidden" name="price" value="84999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1585790050230-5dd28404ccb9">
+                            <button type="submit" class="btn btn-dark btn-sm rounded-pill px-3 py-2 fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4">
+            <div class="card product-card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                <div class="img-container">
+                    <img src="{% static "images/xiaomipad6.webp" %}" alt="Xiaomi Pad 6">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold text-dark mb-1">Xiaomi Pad 6</h5>
+                    <p class="text-muted small mb-3">Performance Champion</p>
+                    <div class="d-flex align-items-center justify-content-between mt-auto pt-2">
+                        <span class="fs-4 fw-bold text-success">₹29,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}" class="m-0">{% csrf_token %}
+                            <input type="hidden" name="name" value="Xiaomi Pad 6">
+                            <input type="hidden" name="price" value="29999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1561154464-82e9adf32764">
+                            <button type="submit" class="btn btn-dark btn-sm rounded-pill px-3 py-2 fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4">
+            <div class="card product-card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                <div class="img-container">
+                    <img src="{% static "images/onepluspad2.jfif" %}" alt="OnePlus Pad">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold text-dark mb-1">OnePlus Pad</h5>
+                    <p class="text-muted small mb-3">Smooth Entertainment</p>
+                    <div class="d-flex align-items-center justify-content-between mt-auto pt-2">
+                        <span class="fs-4 fw-bold text-success">₹37,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}" class="m-0">{% csrf_token %}
+                            <input type="hidden" name="name" value="OnePlus Pad">
+                            <input type="hidden" name="price" value="37999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c">
+                            <button type="submit" class="btn btn-dark btn-sm rounded-pill px-3 py-2 fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4">
+            <div class="card product-card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                <div class="img-container">
+                    <img src="{% static "images/tabp11.jpg" %}" alt="Lenovo Tab P11">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold text-dark mb-1">Lenovo Tab P11</h5>
+                    <p class="text-muted small mb-3">Everyday Versatility</p>
+                    <div class="d-flex align-items-center justify-content-between mt-auto pt-2">
+                        <span class="fs-4 fw-bold text-success">₹24,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}" class="m-0">{% csrf_token %}
+                            <input type="hidden" name="name" value="Lenovo Tab P11">
+                            <input type="hidden" name="price" value="24999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1517336714739-489689fd1ca8">
+                            <button type="submit" class="btn btn-dark btn-sm rounded-pill px-3 py-2 fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4">
+            <div class="card product-card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                <div class="img-container">
+                    <img src="{% static "images/realmepadx.jpg" %}" alt="Realme Pad X">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold text-dark mb-1">Realme Pad X</h5>
+                    <p class="text-muted small mb-3">Slim & Stylish</p>
+                    <div class="d-flex align-items-center justify-content-between mt-auto pt-2">
+                        <span class="fs-4 fw-bold text-success">₹19,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}" class="m-0">{% csrf_token %}
+                            <input type="hidden" name="name" value="Realme Pad X">
+                            <input type="hidden" name="price" value="19999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1498050108023-c5249f4df085">
+                            <button type="submit" class="btn btn-dark btn-sm rounded-pill px-3 py-2 fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4">
+            <div class="card product-card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                <div class="img-container">
+                    <img src="{% static "images/huawei11.jfif" %}" alt="Huawei MatePad 11">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold text-dark mb-1">Huawei MatePad 11</h5>
+                    <p class="text-muted small mb-3">Immersive Display</p>
+                    <div class="d-flex align-items-center justify-content-between mt-auto pt-2">
+                        <span class="fs-4 fw-bold text-success">₹34,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}" class="m-0">{% csrf_token %}
+                            <input type="hidden" name="name" value="Huawei MatePad 11">
+                            <input type="hidden" name="price" value="34999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1609081219090-a6d81d3085bf">
+                            <button type="submit" class="btn btn-dark btn-sm rounded-pill px-3 py-2 fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4">
+            <div class="card product-card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                <div class="img-container">
+                    <img src="{% static "images/pixeltablet.jfif" %}" alt="Google Pixel Tablet">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold text-dark mb-1">Google Pixel Tablet</h5>
+                    <p class="text-muted small mb-3">Smart Home Ready</p>
+                    <div class="d-flex align-items-center justify-content-between mt-auto pt-2">
+                        <span class="fs-4 fw-bold text-success">₹49,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}" class="m-0">{% csrf_token %}
+                            <input type="hidden" name="name" value="Google Pixel Tablet">
+                            <input type="hidden" name="price" value="49999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1587614382346-4ec70e388b28">
+                            <button type="submit" class="btn btn-dark btn-sm rounded-pill px-3 py-2 fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4">
+            <div class="card product-card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                <div class="img-container">
+                    <img src="{% static "images/MicrosoftSurfaceGo3.jpg" %}" alt="Microsoft Surface Go 3">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="fw-bold text-dark mb-1">Microsoft Surface Go 3</h5>
+                    <p class="text-muted small mb-3">Hybrid Productivity</p>
+                    <div class="d-flex align-items-center justify-content-between mt-auto pt-2">
+                        <span class="fs-4 fw-bold text-success">₹58,999</span>
+                        <form method="POST" action="{% url 'add_to_cart' %}" class="m-0">{% csrf_token %}
+                            <input type="hidden" name="name" value="Microsoft Surface Go 3">
+                            <input type="hidden" name="price" value="58999">
+                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2">
+                            <button type="submit" class="btn btn-dark btn-sm rounded-pill px-3 py-2 fw-medium">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock body %}

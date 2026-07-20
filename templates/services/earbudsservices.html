@@ -1,0 +1,160 @@
+{% extends "services/baseservices.html" %}
+
+{% block title %}Earbuds Service{% endblock title %}
+
+{% block servicetitle %}
+Earbuds Service
+{% endblock servicetitle %}
+
+{% block dropdown %}
+
+<select class="form-select">
+
+<option>Select Earbuds Model</option>
+
+<option>AirPods 2</option>
+<option>AirPods 3</option>
+<option>AirPods Pro</option>
+<option>AirPods Pro 2</option>
+
+<option>Boat Airdopes 141</option>
+<option>Boat Airdopes 181</option>
+<option>Boat Airdopes 441</option>
+
+<option>Realme Buds Air 3</option>
+<option>Realme Buds T300</option>
+
+<option>OnePlus Buds Z2</option>
+<option>OnePlus Buds Pro</option>
+
+<option>Samsung Galaxy Buds 2</option>
+<option>Samsung Galaxy Buds Pro</option>
+
+<option>Noise Buds VS104</option>
+<option>Noise Air Buds</option>
+
+<option>JBL Wave 200</option>
+<option>JBL Tune Flex</option>
+
+<option>Oppo Enco Air 2</option>
+<option>Oppo Enco Buds</option>
+
+<option>Vivo TWS Neo</option>
+
+<option>Nothing Ear 1</option>
+<option>Nothing Ear 2</option>
+
+<option>Redmi Buds 4</option>
+<option>Redmi Buds 5</option>
+
+<option>PTron Bassbuds</option>
+
+<option>Boult Audio Z40</option>
+
+<option>Skullcandy Dime</option>
+
+<option>Sony WF C500</option>
+
+<option>Sony WF 1000XM5</option>
+
+<option>Asus ROG Cetra</option>
+
+</select>
+
+<div class="mt-4">
+
+<label class="form-label fw-bold">
+Select Problems
+</label>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Left Earbud Not Working</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Right Earbud Not Working</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Charging Issue</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Low Sound Problem</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Bluetooth Not Connecting</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Case Not Charging</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Battery Draining Fast</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Mic Not Working</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Physical Damage</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">Water Damage</label>
+</div>
+
+</div>
+
+<div class="mt-4">
+
+<label class="form-label fw-bold">
+Your Location
+</label>
+
+<input type="text"
+       class="form-control"
+       placeholder="Enter your address">
+
+</div>
+
+<div class="mt-4">
+
+<label class="form-label fw-bold">
+Phone Number
+</label>
+
+<input type="text"
+       class="form-control"
+       placeholder="Enter your number">
+
+</div>
+
+<div class="mt-4">
+
+<label class="form-label fw-bold">
+Email Address
+</label>
+
+<input type="email"
+       class="form-control"
+       placeholder="Enter your email">
+
+</div>
+
+<div class="d-grid mt-4">
+    
+{% endblock dropdown %}

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock title %} || NexCart</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        *{
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body{
+            background:#f5f7fa;
+        }
+
+        /* Navbar */
+
+        .navbar{
+            background:#111827;
+            padding:15px 0;
+            box-shadow:0 5px 15px rgba(0,0,0,.2);
+            z-index:1050;
+        }
+
+        .navbar-brand{
+            font-size:28px;
+            font-weight:700;
+            color:#ffb703 !important;
+            letter-spacing:1px;
+        }
+
+        .nav-link{
+            color:white !important;
+            margin-left:15px;
+            font-weight:500;
+            transition:.3s;
+            border-radius:8px;
+            padding:8px 15px !important;
+        }
+
+        .nav-link:hover{
+            background:#ffb703;
+            color:#111827 !important;
+        }
+
+        /* Main Container */
+
+        .main-content{
+            min-height:85vh;
+            padding:40px 20px;
+        }
+
+        /* Footer */
+
+        footer{
+            background:#111827;
+            color:#ddd;
+            text-align:center;
+            padding:20px;
+            margin-top:40px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+
+    <div class="container">
+
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <i class="bi bi-cart3"></i> NexCart
+        </a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#menu">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <div class="collapse navbar-collapse" id="menu">
+
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+
+                {% if user.is_authenticated %}
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}">
+                        <i class="bi bi-info-circle"></i> About
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'services' %}">
+                        <i class="bi bi-grid"></i> Services
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contact' %}">
+                        <i class="bi bi-envelope"></i> Contact
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'buynow' %}">
+                        <i class="bi bi-bag-check"></i> Shop
+                    </a>
+                </li>
+
+                {% if user.profile.role == 'seller' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'seller_dashboard' %}">
+                        <i class="bi bi-shop"></i> Seller Dashboard
+                    </a>
+                </li>
+                {% endif %}
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'checkout' %}">
+                        <i class="bi bi-cart-fill"></i> Cart
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'my_orders' %}">
+                        <i class="bi bi-truck"></i> My Orders
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="nav-link border-0 bg-transparent" type="submit">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
+                </li>
+
+                {% else %}
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'signup' %}">Sign up</a>
+                </li>
+
+                {% endif %}
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<div class="main-content">
+    {% block body %}
+    {% endblock body %}
+</div>
+
+<footer>
+    © 2026 <strong>NexCart</strong>. All Rights Reserved.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    /*
+     * The catalog cards display images from Django's static directory.  Keep
+     * the cart in sync with that displayed image instead of the old placeholder
+     * URL stored in each form's hidden `image` input.
+     */
+    document.querySelectorAll('form[action*="add-to-cart"]').forEach((form) => {
+        form.addEventListener('submit', () => {
+            const imageInput = form.querySelector('input[name="image"]');
+            const productImage = form.closest('.card')?.querySelector('img');
+
+            if (imageInput && productImage) {
+                imageInput.value = productImage.currentSrc || productImage.src;
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
