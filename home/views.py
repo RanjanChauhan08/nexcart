@@ -24,6 +24,7 @@ from django.urls import reverse
 from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation
 
+from .forms import ProductForm, ServiceBookingForm
 from home.models import Order, OrderItem, Product, Profile, ServiceBooking, TrackingUpdate
 from django.contrib import messages
 
@@ -259,7 +260,7 @@ def about(request):
     return render(request,'home/about.html')
 def services(request):
     return render(request,'services/services.html')
-from .forms import ContactForm
+from .forms import ContactForm, ServiceBookingForm
 def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -342,27 +343,27 @@ def buylaptop(request):
 
 def add_to_cart(request):
     if request.method == 'POST':
-        cart = request.session.get('cart', [])
+        cart = request.session.get('cart', {})
         product_id = request.POST.get('product_id')
         if not product_id:
             messages.error(request, 'Select a product before adding it to your cart.')
             return redirect('buynow')
-        product = Product.objects.filter(id=product_id, is_active=True, stock__gt=0).select_related('seller__profile').first()
+
+        try:
+            quantity = int(request.POST.get('quantity', 1))
+            if quantity < 1:
+                raise ValueError()
+        except (ValueError, TypeError):
+            quantity = 1
+
+        product = Product.objects.filter(id=product_id, is_active=True, stock__gte=quantity).first()
         if not product:
             messages.error(request, 'This product is no longer available.')
             return redirect('buynow')
-        image = product.image.url if product.image else product.image_url
-        # Seller emails are private account data. Orders only need a public
-        # storefront label, never an email-address fallback.
-        seller_name = product.seller.profile.store_name or 'NexCart Seller'
-        cart.append({
-            'product_id': product.id,
-            'seller_id': product.seller_id,
-            'seller_name': seller_name,
-            'name': product.name,
-            'price': str(product.price),
-            'image': image,
-        })
+
+        current_quantity = cart.get(product_id, 0)
+        cart[product_id] = current_quantity + quantity
+
         request.session['cart'] = cart
         return redirect('checkout')
     return redirect('buynow')
@@ -375,9 +376,28 @@ def remove_from_cart(request, index):
     return redirect('checkout')
 
 def checkout(request):
-    cart = request.session.get('cart', [])
-    total = sum((Decimal(str(item['price']).replace(',', '')) for item in cart), Decimal('0'))
-    return render(request, 'checkout/checkout.html', {'cart': cart, 'total': total})
+    cart_data = request.session.get('cart', {})
+    product_ids = cart_data.keys()
+    products = Product.objects.filter(id__in=product_ids).select_related('seller__profile')
+    
+    cart_items = []
+    total = Decimal('0')
+    
+    for product in products:
+        quantity = cart_data.get(str(product.id), 0)
+        if quantity > 0:
+            item_total = product.price * quantity
+            cart_items.append({
+                'product_id': product.id,
+                'name': product.name,
+                'price': product.price,
+                'quantity': quantity,
+                'image': product.image.url if product.image else product.image_url,
+                'seller_name': product.seller.profile.store_name or 'NexCart Seller',
+                'item_total': item_total,
+            })
+            total += item_total
+    return render(request, 'checkout/checkout.html', {'cart': cart_items, 'total': total})
 
 
 def _lookup_indian_pin_code(postal_code):
@@ -413,7 +433,7 @@ def postal_code_lookup(request, postal_code):
 
 def place_order(request):
     if request.method == 'POST':
-        cart = request.session.get('cart', [])
+        cart = request.session.get('cart', {})
         postal_code = request.POST.get('postal_code', '').strip()
         address = request.POST.get('address', '').strip()
         customer_name = request.POST.get('name', '').strip()
@@ -434,20 +454,25 @@ def place_order(request):
         with transaction.atomic():
             # Re-read every product and price from the database. Session cart
             # values are display data only and must never decide an order total.
-            grouped_items = {}
-            for cart_item in cart:
-                product = Product.objects.select_for_update().filter(
-                    id=cart_item.get('product_id'), is_active=True, stock__gt=0
-                ).select_related('seller__profile').first()
-                if not product:
-                    messages.error(request, 'One or more cart items are no longer available. Please review your cart.')
+            product_ids = cart.keys()
+            products_in_db = Product.objects.select_for_update().filter(
+                id__in=product_ids, is_active=True
+            ).select_related('seller__profile')
+
+            products_map = {str(p.id): p for p in products_in_db}
+            grouped_items = {} # {seller_id: [{'product': product, 'quantity': quantity}]}
+
+            for product_id, quantity in cart.items():
+                product = products_map.get(product_id)
+                if not product or product.stock < quantity:
+                    messages.error(request, f'Product "{product.name if product else "ID " + product_id}" is no longer available in the requested quantity. Please review your cart.')
                     return redirect('checkout')
-                grouped_items.setdefault(product.seller_id, []).append(product)
+                grouped_items.setdefault(product.seller_id, []).append({'product': product, 'quantity': quantity})
 
             orders = []
-            for seller_id, items in grouped_items.items():
-                total = sum((product.price for product in items), Decimal('0'))
-                seller = items[0].seller
+            for seller_id, item_details in grouped_items.items():
+                total = sum((item['product'].price * item['quantity'] for item in item_details), Decimal('0'))
+                seller = item_details[0]['product'].seller
                 dispatch_city = seller.profile.city or 'Seller dispatch centre'
                 order = Order.objects.create(
                     user=request.user,
@@ -465,12 +490,13 @@ def place_order(request):
                     order=order, status='placed', location=dispatch_city,
                     note=f'Order received. Delivery destination: {delivery_city}.',
                 )
-                for product in items:
-                    product.stock -= 1
+                for item in item_details:
+                    product = item['product']
+                    quantity = item['quantity']
+                    product.stock -= quantity
                     product.save(update_fields=['stock'])
                     OrderItem.objects.create(
-                        order=order, product=product, product_name=product.name,
-                        price=product.price,
+                        order=order, product=product, product_name=product.name, price=product.price, quantity=quantity
                     )
                 orders.append(order)
 

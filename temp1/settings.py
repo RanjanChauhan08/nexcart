@@ -15,9 +15,20 @@ from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
 
 
+def env_bool(name, default=False):
+    return os.getenv(name, str(default)).lower() in {'1', 'true', 'yes', 'on'}
+
+
+def get_allowed_hosts():
+    hosts = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+    if pa_domain := os.getenv('PYTHONANYWHERE_DOMAIN'):
+        hosts.append(pa_domain)
+    return [host.strip() for host in hosts if host.strip()]
+
+
 def load_local_env(path):
     """Load development-only values from .env without adding a dependency."""
-    if not path.exists():
+    if not path.exists() or not path.is_file():
         return
     for line in path.read_text(encoding='utf-8').splitlines():
         line = line.strip()
@@ -28,15 +39,10 @@ def load_local_env(path):
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from a .env file in the project root.
+# This is the directory that contains the manage.py file.
 load_local_env(BASE_DIR / '.env')
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
-
-def env_bool(name, default=False):
-    return os.getenv(name, str(default)).lower() in {'1', 'true', 'yes', 'on'}
-
 
 # Production values come from the host environment, never source control.
 DEBUG = env_bool('DJANGO_DEBUG', True)
@@ -44,8 +50,11 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-development-only-ch
 if not DEBUG and (SECRET_KEY.startswith('django-insecure-') or len(SECRET_KEY) < 50):
     raise ImproperlyConfigured('Set a strong DJANGO_SECRET_KEY before deploying NexCart.')
 
-ALLOWED_HOSTS = [host.strip() for host in os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if host.strip()]
-CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',') if origin.strip()]
+ALLOWED_HOSTS = get_allowed_hosts()
+
+# Add the PythonAnywhere host to trusted origins for CSRF protection.
+trusted_origins_str = os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', f"https://{os.getenv('PYTHONANYWHERE_DOMAIN')}" if os.getenv('PYTHONANYWHERE_DOMAIN') else '')
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in trusted_origins_str.split(',') if origin.strip()]
 
 
 # Application definition
