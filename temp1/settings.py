@@ -53,8 +53,12 @@ if not DEBUG and (SECRET_KEY.startswith('django-insecure-') or len(SECRET_KEY) <
 ALLOWED_HOSTS = get_allowed_hosts()
 
 # Add the PythonAnywhere host to trusted origins for CSRF protection.
-trusted_origins_str = os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', f"https://{os.getenv('PYTHONANYWHERE_DOMAIN')}" if os.getenv('PYTHONANYWHERE_DOMAIN') else '')
-CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in trusted_origins_str.split(',') if origin.strip()]
+def get_csrf_trusted_origins():
+    origins = os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',')
+    if pa_domain := os.getenv('PYTHONANYWHERE_DOMAIN'):
+        origins.append(f"https://{pa_domain}")
+    return [origin.strip() for origin in origins if origin.strip()]
+CSRF_TRUSTED_ORIGINS = get_csrf_trusted_origins()
 
 
 # Application definition
@@ -111,13 +115,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 import dj_database_url
+
+# Determine if we are using SQLite by checking if DATABASE_URL is set.
+using_sqlite = 'DATABASE_URL' not in os.environ
+
 DATABASES = {
     'default': dj_database_url.config(
         # Fallback to SQLite for local development where DATABASE_URL is not set.
         default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
         conn_max_age=600,
-        # Heroku and Render require SSL for database connections
-        ssl_require=env_bool('DJANGO_DB_SSL', not DEBUG)
+        # Only require SSL for non-SQLite databases in production.
+        ssl_require=False if using_sqlite else env_bool('DJANGO_DB_SSL', not DEBUG)
     )
 }
 

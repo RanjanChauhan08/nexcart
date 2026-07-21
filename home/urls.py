@@ -28,7 +28,7 @@ urlpatterns = [
     path('buyphone', views.buyphone, name="buyphone"),
     path('checkout', login_required(views.checkout), name="checkout"),
     path('add-to-cart', login_required(views.add_to_cart), name="add_to_cart"),
-    path('remove-from-cart/<int:index>', login_required(views.remove_from_cart), name="remove_from_cart"),
+    path('remove-from-cart/<int:product_id>', login_required(views.remove_from_cart), name="remove_from_cart"),
     path('place-order', login_required(views.place_order), name="place_order"),
     path('servicebooked', login_required(views.servicebooked), name="servicebooked")
 ]

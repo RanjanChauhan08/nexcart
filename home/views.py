@@ -368,10 +368,11 @@ def add_to_cart(request):
         return redirect('checkout')
     return redirect('buynow')
 
-def remove_from_cart(request, index):
-    cart = request.session.get('cart', [])
-    if 0 <= index < len(cart):
-        cart.pop(index)
+def remove_from_cart(request, product_id):
+    cart = request.session.get('cart', {})
+    product_id_str = str(product_id)
+    if product_id_str in cart:
+        del cart[product_id_str]
         request.session['cart'] = cart
     return redirect('checkout')
 
