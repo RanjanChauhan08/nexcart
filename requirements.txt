@@ -2,8 +2,6 @@ Django~=4.2.0
 gunicorn==23.0.0
 whitenoise==6.9.0
 dj-database-url==3.1.2
-psycopg==3.1.18
-mysqlclient==2.2.4
 cloudinary==1.40.0
 django-cloudinary-storage==0.3.0
 Pillow==10.4.0

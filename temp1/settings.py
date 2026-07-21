@@ -28,7 +28,7 @@ def get_allowed_hosts():
 
 def load_local_env(path):
     """Load development-only values from .env without adding a dependency."""
-    if not path.exists() or not path.is_file():
+    if not path.is_file():
         return
     for line in path.read_text(encoding='utf-8').splitlines():
         line = line.strip()
