@@ -1,6 +1,7 @@
 import uuid
 
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 from django.db import models
 
 
@@ -114,7 +115,11 @@ class TrackingUpdate(models.Model):
 class Contact(models.Model):
     name = models.CharField(max_length=122)
     email = models.EmailField(max_length=122)
-    phnumber = models.CharField(max_length=10)
+    # Add a validator to ensure the phone number consists of 10 digits.
+    phnumber = models.CharField(
+        max_length=10,
+        validators=[RegexValidator(r'^\d{10}$', 'Enter a valid 10-digit phone number.')]
+    )
     reason_for_contacting = models.TextField()
 
     def __str__(self):

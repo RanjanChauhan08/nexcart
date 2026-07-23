@@ -306,10 +306,11 @@ def seller_dashboard(request):
                 product.save()
                 messages.success(request, 'Product published successfully.')
                 return redirect('seller_dashboard')
-            else:
-                messages.error(request, 'Please correct the errors below.')
+        # If the product form was submitted but invalid, it will be passed to the template.
+        # Otherwise, we create a new blank form.
+        if 'product_form' not in locals():
+            product_form = ProductForm()
 
-    product_form = ProductForm()
     # For a GET request, render the dashboard with the seller's products, orders, and a blank product form.
     return render(request, 'seller/dashboard.html', {
         'products': Product.objects.filter(seller=request.user),

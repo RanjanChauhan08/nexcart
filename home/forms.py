@@ -26,3 +26,9 @@ class ProductForm(forms.ModelForm):
         model = Product
         # Specifies which fields from the Product model should be included in the form.
         fields = ['name', 'description', 'category', 'price', 'stock', 'image', 'image_url']
+
+    # This modification makes the image field optional, which is necessary for
+    # free PythonAnywhere accounts that cannot connect to Cloudinary.
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['image'].required = False
