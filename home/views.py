@@ -448,35 +448,33 @@ def increase_cart_quantity(request, product_id):
             messages.error(request, "No more stock available for this item.")
     return redirect('checkout')
 
-def checkout(request):
-    """Displays the contents of the cart and calculates the total price."""
+def checkout(request, return_context=False):
+    """
+    Displays the contents of the cart and calculates the total price.
+    Can also return the context dictionary instead of rendering a template.
+    """
     # Get cart data from the session.
     cart_data = request.session.get('cart', {})
     product_ids = cart_data.keys()
     # Fetch all product details from the database in a single query.
     products = Product.objects.filter(id__in=product_ids).select_related('seller__profile')
-    
+
     cart_items = []
     total = Decimal('0')
-    
+
     # Loop through the products and build a list of cart items with all necessary details for display.
     # This is more secure than trusting price data stored in the session.
     for product in products:
         quantity = cart_data.get(str(product.id), 0)
         if quantity > 0:
             item_total = product.price * quantity
-            cart_items.append({
-                'product_id': product.id,
-                'name': product.name,
-                'price': product.price,
-                'quantity': quantity,
-                # Prioritize image_url, then the uploaded image, then a placeholder.
-                'image': product.image_url or (product.image.url if product.image else None),
-                'seller_name': product.seller.profile.store_name or 'NexCart Seller',
-                'item_total': item_total,
-            })
+            cart_items.append({'product_id': product.id, 'name': product.name, 'price': product.price, 'quantity': quantity, 'image': product.image_url or (product.image.url if product.image else None), 'seller_name': product.seller.profile.store_name or 'NexCart Seller', 'item_total': item_total})
             total += item_total
-    return render(request, 'checkout/checkout.html', {'cart': cart_items, 'total': total})
+
+    context = {'cart': cart_items, 'total': total}
+    if return_context:
+        return context
+    return render(request, 'checkout/checkout.html', context)
 
 
 def _lookup_indian_pin_code(postal_code):
