@@ -1,6 +1,7 @@
 # --- Core Imports ---
 import secrets
 import uuid
+import razorpay
 import logging
 import json
 import re
@@ -15,6 +16,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.mail import send_mail
 from django.core.validators import validate_email
+from django.views.decorators.csrf import csrf_exempt
 from smtplib import SMTPException
 from django.db import transaction
 from django.utils import timezone
@@ -505,20 +507,32 @@ def place_order(request):
         address = request.POST.get('address', '').strip()
         customer_name = request.POST.get('name', '').strip()
         customer_phone = request.POST.get('phone', '').strip()
+        payment_method = request.POST.get('payment_method')
         # Temporarily disable PIN code lookup for PythonAnywhere free account
-        # Free PythonAnywhere accounts have a whitelist of allowed external sites,
-        # so this API call would likely fail.
-        # pin_details = _lookup_indian_pin_code(postal_code)
-        if not cart or not address or not postal_code or not customer_name or not customer_phone:
-            messages.error(request, 'Add products and provide your name, phone number, street address and PIN code.')
-            return redirect('checkout')
-        if not re.fullmatch(r'\d{10}', customer_phone):
-            messages.error(request, 'Enter a valid 10-digit phone number.')
-            return redirect('checkout')
-        # if not pin_details:
-        #     messages.error(request, 'Enter a valid PIN code before placing your order.')
-        #     return redirect('checkout')
-        # delivery_city = pin_details['delivery_city']
+        
+        # --- Validation Logic ---
+        # If validation fails, we need to re-render the checkout page with the errors.
+        # To do that, we first need the same context that the checkout view provides.
+        is_valid = True
+        if not (cart and address and postal_code and customer_name and customer_phone and payment_method):
+            messages.error(request, 'Please fill out all required fields: name, phone, address, and PIN code.')
+            is_valid = False
+        elif not re.fullmatch(r'\d{10}', customer_phone):
+            messages.error(request, 'Please enter a valid 10-digit phone number.')
+            is_valid = False
+
+        if not is_valid:
+            # Re-create the context needed to render the checkout page.
+            checkout_context = checkout(request, return_context=True)
+            # Add the user's submitted data to the context so the form fields are pre-filled.
+            checkout_context['form_data'] = request.POST
+            return render(request, 'checkout/checkout.html', checkout_context)
+
+        # Add COD handling fee if applicable
+        cod_handling_fee = settings.COD_HANDLING_FEE if payment_method == 'cod' else Decimal('0')
+
+
+        # If validation passes, proceed with placing the order.
         delivery_city = "Unknown City" # Placeholder
         delivery_address = f"{address}, {delivery_city} - {postal_code}"
 
@@ -546,7 +560,7 @@ def place_order(request):
             orders = []
             # Create a separate order for each seller.
             for seller_id, item_details in grouped_items.items():
-                total = sum((item['product'].price * item['quantity'] for item in item_details), Decimal('0'))
+                total = sum((item['product'].price * item['quantity'] for item in item_details), Decimal('0')) + cod_handling_fee
                 seller = item_details[0]['product'].seller
                 dispatch_city = seller.profile.city or 'Seller dispatch centre'
                 order = Order.objects.create(
@@ -560,6 +574,7 @@ def place_order(request):
                     delivery_postal_code=postal_code,
                     current_location=dispatch_city,
                     estimated_delivery=date.today() + timedelta(days=6),
+                    payment_method=payment_method,
                 )
                 TrackingUpdate.objects.create(
                     order=order, status='placed', location=dispatch_city,
@@ -576,11 +591,103 @@ def place_order(request):
                     )
                 orders.append(order)
 
-        # Clear the cart from the session after the order is successfully placed.
-        request.session['cart'] = []
-        return render(request, 'checkout/order_success.html', {'orders': orders})
+        # For online payments, create a Razorpay order. We'll handle multiple orders later.
+        if payment_method == 'online' and orders:
+            client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+            # For simplicity, we create a payment for the first order's total amount.
+            # A real multi-order scenario would require a more complex payment aggregation.
+            payment_amount = int(orders[0].total_amount * 100) # Amount in paise
+
+            razorpay_order = client.order.create({
+                "amount": payment_amount,
+                "currency": "INR",
+                "receipt": orders[0].tracking_code,
+                "notes": {"order_tracking_code": orders[0].tracking_code}
+            })
+            
+            # Pass all details to the template to initiate payment.
+            return render(request, 'checkout/payment.html', {
+                'razorpay_order_id': razorpay_order['id'],
+                'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+                'amount': payment_amount,
+                'order': orders[0]
+            })
+        else: # For COD
+            request.session['cart'] = {}
+            return render(request, 'checkout/order_success.html', {'orders': orders})
+
     return redirect('checkout')
 
+def checkout(request, return_context=False):
+    """
+    Displays the contents of the cart and calculates the total price.
+    Can also return the context dictionary instead of rendering a template.
+    """
+    cart_data = request.session.get('cart', {})
+    product_ids = cart_data.keys()
+    products = Product.objects.filter(id__in=product_ids).select_related('seller__profile')
+    
+    cart_items = []
+    total = Decimal('0')
+    
+    for product in products:
+        quantity = cart_data.get(str(product.id), 0)
+        if quantity > 0:
+            item_total = product.price * quantity
+            cart_items.append({
+                'product_id': product.id, 'name': product.name, 'price': product.price,
+                'quantity': quantity, 'image': product.image_url or (product.image.url if product.image else None),
+                'seller_name': product.seller.profile.store_name or 'NexCart Seller', 'item_total': item_total,
+            })
+            total += item_total
+    
+    context = {'cart': cart_items, 'total': total}
+    if return_context:
+        return context
+    return render(request, 'checkout/checkout.html', context)
+
+@csrf_exempt
+def payment_success(request):
+    """
+    Handles the callback from Razorpay after a payment attempt.
+    Verifies the payment signature to confirm the transaction is legitimate.
+    """
+    if request.method == 'POST':
+        try:
+            # Get the payment details from the POST request.
+            payment_id = request.POST.get('razorpay_payment_id', '')
+            order_id = request.POST.get('razorpay_order_id', '')
+            signature = request.POST.get('razorpay_signature', '')
+
+            params_dict = {
+                'razorpay_order_id': order_id,
+                'razorpay_payment_id': payment_id,
+                'razorpay_signature': signature
+            }
+
+            # Initialize the Razorpay client.
+            client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+            
+            # Verify the signature. This will raise an error if it's not valid.
+            client.utility.verify_payment_signature(params_dict)
+
+            # If verification is successful, update the order status.
+            # Note: In a multi-order scenario, you would need to find all related orders.
+            order = Order.objects.get(razorpay_order_id=order_id)
+            order.payment_status = 'paid'
+            order.razorpay_payment_id = payment_id
+            order.save()
+            
+            request.session['cart'] = {}
+            return render(request, 'checkout/order_success.html', {'orders': [order]})
+
+        except Exception as e:
+            # If signature verification fails or any other error occurs.
+            logger.error(f"Payment verification failed: {e}")
+            messages.error(request, "Payment verification failed. Please contact support.")
+            return redirect('checkout')
+
+    return redirect('checkout')
 
 # --- Order Tracking Views ---
 
@@ -588,7 +695,8 @@ def place_order(request):
 def my_orders(request):
     """Displays a list of all orders placed by the current user."""
     return render(request, 'tracking/my_orders.html', {
-        'orders': Order.objects.filter(user=request.user).prefetch_related('items'),
+        # Optimized query to fetch related items and their products in a performant way.
+        'orders': Order.objects.filter(user=request.user).prefetch_related('items__product'),
     })
 
 

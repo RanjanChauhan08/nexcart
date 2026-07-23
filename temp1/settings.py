@@ -224,6 +224,11 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
 }
 
+# --- Razorpay Configuration ---
+RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID')
+RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET')
+COD_HANDLING_FEE = Decimal(os.getenv('COD_HANDLING_FEE', '100.00'))
+
 # --- Production Security Headers ---
 # These settings enhance security when running in production (DEBUG=False).
 
