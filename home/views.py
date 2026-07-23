@@ -307,12 +307,14 @@ def seller_dashboard(request):
                 product.seller = request.user
                 product.save()
                 messages.success(request, 'Product published successfully.')
+                return redirect('seller_dashboard') # Redirect after success
             else:
                 # If the form is invalid, keep the submitted data to show errors.
                 messages.error(request, 'Please correct the errors below.')
-        # For a GET request, create a new, empty form to display on the page.
+    else:
+        # For a GET request, create a new, empty form.
         product_form = ProductForm()
-
+        
     # For a GET request, render the dashboard with the seller's products, orders, and a blank product form.
     return render(request, 'seller/dashboard.html', {
         'products': Product.objects.filter(seller=request.user),
