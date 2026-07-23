@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 # --- Core Imports ---
 import os
 from pathlib import Path
+from decimal import Decimal
 from django.core.exceptions import ImproperlyConfigured
 
 # --- Helper Functions for Environment-based Settings ---
