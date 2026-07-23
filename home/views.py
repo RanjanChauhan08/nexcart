@@ -432,6 +432,22 @@ def remove_from_cart(request, product_id):
         request.session['cart'] = cart
     return redirect('checkout')
 
+def increase_cart_quantity(request, product_id):
+    """Increases the quantity of a product already in the cart by one."""
+    cart = request.session.get('cart', {})
+    product_id_str = str(product_id)
+
+    if product_id_str in cart:
+        # Check for stock before increasing quantity.
+        # This prevents users from adding more items than are available.
+        product = Product.objects.filter(id=product_id, is_active=True, stock__gt=cart[product_id_str]).first()
+        if product:
+            cart[product_id_str] += 1
+            request.session['cart'] = cart
+        else:
+            messages.error(request, "No more stock available for this item.")
+    return redirect('checkout')
+
 def checkout(request):
     """Displays the contents of the cart and calculates the total price."""
     # Get cart data from the session.
