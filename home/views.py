@@ -310,6 +310,9 @@ def seller_dashboard(request):
         # Otherwise, we create a new blank form.
         if 'product_form' not in locals():
             product_form = ProductForm()
+    else:
+        # For a GET request, create a new, empty form to display on the page.
+        product_form = ProductForm()
 
     # For a GET request, render the dashboard with the seller's products, orders, and a blank product form.
     return render(request, 'seller/dashboard.html', {
