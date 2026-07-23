@@ -243,8 +243,7 @@ Sold by {{ item.seller_name|default:"NexCart" }}
 <p class="shipping">
 🚚 Free Delivery
 </p>
-
-<a href="{% url 'remove_from_cart' forloop.counter0 %}"
+<a href="{% url 'remove_from_cart' item.product_id %}"
 class="btn btn-outline-danger remove-btn">
 
 Remove
