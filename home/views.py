@@ -307,12 +307,9 @@ def seller_dashboard(request):
                 product.seller = request.user
                 product.save()
                 messages.success(request, 'Product published successfully.')
-                return redirect('seller_dashboard')
-        # If the product form was submitted but invalid, it will be passed to the template.
-        # Otherwise, we create a new blank form.
-        if 'product_form' not in locals():
-            product_form = ProductForm()
-    else:
+            else:
+                # If the form is invalid, keep the submitted data to show errors.
+                messages.error(request, 'Please correct the errors below.')
         # For a GET request, create a new, empty form to display on the page.
         product_form = ProductForm()
 
@@ -468,7 +465,15 @@ def checkout(request, return_context=False):
         quantity = cart_data.get(str(product.id), 0)
         if quantity > 0:
             item_total = product.price * quantity
-            cart_items.append({'product_id': product.id, 'name': product.name, 'price': product.price, 'quantity': quantity, 'image': product.image_url or (product.image.url if product.image else None), 'seller_name': product.seller.profile.store_name or 'NexCart Seller', 'item_total': item_total})
+            # Safely get the seller's store name.
+            seller_name = 'NexCart Seller'
+            if product.seller and hasattr(product.seller, 'profile') and product.seller.profile.store_name:
+                seller_name = product.seller.profile.store_name
+
+            cart_items.append({
+                'product_id': product.id, 'name': product.name, 'price': product.price, 'quantity': quantity,
+                'image': product.image_url or (product.image.url if product.image else None),
+                'seller_name': seller_name, 'item_total': item_total})
             total += item_total
 
     context = {'cart': cart_items, 'total': total}
@@ -697,11 +702,32 @@ def payment_success(request):
 
 @login_required
 def my_orders(request):
-    """Displays a list of all orders placed by the current user."""
-    return render(request, 'tracking/my_orders.html', {
-        # Optimized query to fetch related items and their products in a performant way.
-        'orders': Order.objects.filter(user=request.user).prefetch_related('items__product'),
-    })
+    """
+    Displays a list of all orders placed by the current user.
+    This view now processes order data to prevent template errors if a product has been deleted.
+    """
+    # Fetch all orders for the user, prefetching related items and their products.
+    orders_qs = Order.objects.filter(user=request.user).prefetch_related('items__product__seller__profile').order_by('-created_at')
+
+    # Process the orders to create a safe context for the template.
+    processed_orders = []
+    for order in orders_qs:
+        processed_items = []
+        for item in order.items.all():
+            # Build a dictionary for each item. This avoids template attribute errors.
+            processed_item = {
+                'name': item.product_name,  # Always use the saved product_name.
+                'quantity': item.quantity,
+                'price': item.price,
+                # Safely get the image URL.
+                'image_url': item.product.image_url if item.product and item.product.image_url else (item.product.image.url if item.product and item.product.image else None),
+            }
+            processed_items.append(processed_item)
+        # Attach the safely processed items back to the order object for the template.
+        order.processed_items = processed_items
+        processed_orders.append(order)
+
+    return render(request, 'tracking/my_orders.html', {'orders': processed_orders})
 
 
 @login_required
