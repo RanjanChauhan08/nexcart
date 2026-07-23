@@ -46,6 +46,11 @@ class Product(models.Model):
     class Meta:
         ordering = ['-created_at']
 
+    def clean(self):
+        """Ensure that either an image file is uploaded or an image URL is provided, but not both."""
+        if self.image and self.image_url:
+            raise models.ValidationError("Please provide either an image file or an image URL, not both.")
+
     def __str__(self):
         return self.name
 

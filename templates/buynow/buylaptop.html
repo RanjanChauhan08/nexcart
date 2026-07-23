@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+<!-- This template block sets the title of the HTML page. -->
 {% block title %}Explore Laptops{% endblock title %}
 
 {% block body %}
@@ -32,7 +33,7 @@
         <p class="text-muted mx-auto" style="max-width: 500px;">Discover elite performance and stunning design built for your daily workflow and gaming needs.</p>
     </div>
 
-    <!-- Product Grid -->
+    <!-- This is the main grid that will display all the laptop products. -->
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
 
         <!-- Laptop 1: MacBook Air M5 -->
@@ -47,9 +48,9 @@
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <span class="h4 fw-bold text-dark mb-0">₹1,09,999</span>
                         <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
-                            <input type="hidden" name="name" value="MacBook Air M5">
-                            <input type="hidden" name="price" value="109999">
-                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1517336714739-489689fd1ca8">
+                            <!-- IMPORTANT: This hidden input sends the product's unique ID to the server. -->
+                            <!-- You must replace "1" with the actual ID of the MacBook Air M5 product in your database. -->
+                            <input type="hidden" name="product_id" value="1">
                             <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
                         </form>
                     </div>
@@ -69,9 +70,9 @@
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <span class="h4 fw-bold text-dark mb-0">₹92,999</span>
                         <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
-                            <input type="hidden" name="name" value="Dell XPS 13">
-                            <input type="hidden" name="price" value="92999">
-                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1496181133206-80ce9b88a853">
+                            <!-- BUG FIX: Changed from name/price to product_id. -->
+                            <!-- You must replace "2" with the actual ID of the Dell XPS 13 product. -->
+                            <input type="hidden" name="product_id" value="2">
                             <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
                         </form>
                     </div>
@@ -91,9 +92,9 @@
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <span class="h4 fw-bold text-dark mb-0">₹74,999</span>
                         <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
-                            <input type="hidden" name="name" value="HP Victus 16">
-                            <input type="hidden" name="price" value="74999">
-                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2">
+                            <!-- BUG FIX: Changed from name/price to product_id. -->
+                            <!-- You must replace "3" with the actual ID of the HP Victus 16 product. -->
+                            <input type="hidden" name="product_id" value="3">
                             <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
                         </form>
                     </div>
@@ -113,9 +114,9 @@
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <span class="h4 fw-bold text-dark mb-0">₹89,999</span>
                         <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
-                            <input type="hidden" name="name" value="Lenovo Legion 5">
-                            <input type="hidden" name="price" value="89999">
-                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1515879218367-8466d910aaa4">
+                            <!-- BUG FIX: Changed from name/price to product_id. -->
+                            <!-- You must replace "4" with the actual ID of the Lenovo Legion 5 product. -->
+                            <input type="hidden" name="product_id" value="4">
                             <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
                         </form>
                     </div>
@@ -135,9 +136,9 @@
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <span class="h4 fw-bold text-dark mb-0">₹1,24,999</span>
                         <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
-                            <input type="hidden" name="name" value="Asus ROG Strix">
-                            <input type="hidden" name="price" value="124999">
-                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed">
+                            <!-- BUG FIX: Changed from name/price to product_id. -->
+                            <!-- You must replace "5" with the actual ID of the Asus ROG Strix product. -->
+                            <input type="hidden" name="product_id" value="5">
                             <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
                         </form>
                     </div>
@@ -157,9 +158,9 @@
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <span class="h4 fw-bold text-dark mb-0">₹68,999</span>
                         <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
-                            <input type="hidden" name="name" value="Acer Nitro 5">
-                            <input type="hidden" name="price" value="68999">
-                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1593642632823-8f785ba67e45">
+                            <!-- BUG FIX: Changed from name/price to product_id. -->
+                            <!-- You must replace "6" with the actual ID of the Acer Nitro 5 product. -->
+                            <input type="hidden" name="product_id" value="6">
                             <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
                         </form>
                     </div>
@@ -179,9 +180,9 @@
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <span class="h4 fw-bold text-dark mb-0">₹84,999</span>
                         <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
-                            <input type="hidden" name="name" value="MSI Katana GF66">
-                            <input type="hidden" name="price" value="84999">
-                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1541807084-5c52b6b3adef">
+                            <!-- BUG FIX: Changed from name/price to product_id. -->
+                            <!-- You must replace "7" with the actual ID of the MSI Katana GF66 product. -->
+                            <input type="hidden" name="product_id" value="7">
                             <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
                         </form>
                     </div>
@@ -201,9 +202,9 @@
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <span class="h4 fw-bold text-dark mb-0">₹79,999</span>
                         <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
-                            <input type="hidden" name="name" value="Samsung Galaxy Book 4">
-                            <input type="hidden" name="price" value="79999">
-                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1498050108023-c5249f4df085">
+                            <!-- BUG FIX: Changed from name/price to product_id. -->
+                            <!-- You must replace "8" with the actual ID of the Samsung Galaxy Book 4 product. -->
+                            <input type="hidden" name="product_id" value="8">
                             <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
                         </form>
                     </div>
@@ -223,9 +224,9 @@
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <span class="h4 fw-bold text-dark mb-0">₹1,02,999</span>
                         <form method="POST" action="{% url 'add_to_cart' %}">{% csrf_token %}
-                            <input type="hidden" name="name" value="Microsoft Surface Laptop 5">
-                            <input type="hidden" name="price" value="102999">
-                            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1484788984921-03950022c9ef">
+                            <!-- BUG FIX: Changed from name/price to product_id. -->
+                            <!-- You must replace "9" with the actual ID of the Microsoft Surface Laptop 5 product. -->
+                            <input type="hidden" name="product_id" value="9">
                             <button type="submit" class="btn btn-dark rounded-pill px-3 py-2 btn-sm fw-medium">Add to Cart</button>
                         </form>
                     </div>
