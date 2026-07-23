@@ -40,7 +40,11 @@
         <div class="col">
             <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
                 <div class="product-img-wrapper rounded-top-4">
-                    <img src="{% static 'images/m5.jpg' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="MacBook Air M5">
+                    <!--
+                        This is how you should display the image. It checks for the image_url first.
+                        If it's not available, it shows a placeholder.
+                    -->
+                    <img src="{{ product.image_url|default:'https://via.placeholder.com/400x300.png?text=No+Image' }}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="MacBook Air M5">
                 </div>
                 <div class="card-body d-flex flex-column p-4">
                     <h5 class="fw-bold mb-1">MacBook Air M5</h5>
@@ -62,8 +66,7 @@
         <div class="col">
             <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
                 <div class="product-img-wrapper rounded-top-4">
-                    <!-- Fixed missing file extension from original code assuming it's .jpg/.png -->
-                <img src="{% static 'images/xps13' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Dell XPS 13">                </div>
+                    <img src="{{ product.image_url|default:'https://via.placeholder.com/400x300.png?text=No+Image' }}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Dell XPS 13">                </div>
                 <div class="card-body d-flex flex-column p-4">
                     <h5 class="fw-bold mb-1">Dell XPS 13</h5>
                     <p class="text-muted small mb-3">InfinityEdge Ultrabook</p>
@@ -84,7 +87,7 @@
         <div class="col">
             <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
                 <div class="product-img-wrapper rounded-top-4">
-                    <img src="{% static 'images/victus16.jpg' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="HP Victus 16">
+                    <img src="{{ product.image_url|default:'https://via.placeholder.com/400x300.png?text=No+Image' }}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="HP Victus 16">
                 </div>
                 <div class="card-body d-flex flex-column p-4">
                     <h5 class="fw-bold mb-1">HP Victus 16</h5>
@@ -106,7 +109,7 @@
         <div class="col">
             <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
                 <div class="product-img-wrapper rounded-top-4">
-                    <img src="{% static 'images/legion5.avif' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Lenovo Legion 5">
+                    <img src="{{ product.image_url|default:'https://via.placeholder.com/400x300.png?text=No+Image' }}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Lenovo Legion 5">
                 </div>
                 <div class="card-body d-flex flex-column p-4">
                     <h5 class="fw-bold mb-1">Lenovo Legion 5</h5>
@@ -128,7 +131,7 @@
         <div class="col">
             <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
                 <div class="product-img-wrapper rounded-top-4">
-                    <img src="{% static 'images/strix.png' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Asus ROG Strix">
+                    <img src="{{ product.image_url|default:'https://via.placeholder.com/400x300.png?text=No+Image' }}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Asus ROG Strix">
                 </div>
                 <div class="card-body d-flex flex-column p-4">
                     <h5 class="fw-bold mb-1">Asus ROG Strix</h5>
@@ -150,7 +153,7 @@
         <div class="col">
             <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
                 <div class="product-img-wrapper rounded-top-4">
-                    <img src="{% static 'images/nitro5.jfif' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Acer Nitro 5">
+                    <img src="{{ product.image_url|default:'https://via.placeholder.com/400x300.png?text=No+Image' }}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Acer Nitro 5">
                 </div>
                 <div class="card-body d-flex flex-column p-4">
                     <h5 class="fw-bold mb-1">Acer Nitro 5</h5>
@@ -172,7 +175,7 @@
         <div class="col">
             <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
                 <div class="product-img-wrapper rounded-top-4">
-                    <img src="{% static 'images/katanagf66.jfif' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="MSI Katana GF66">
+                    <img src="{{ product.image_url|default:'https://via.placeholder.com/400x300.png?text=No+Image' }}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="MSI Katana GF66">
                 </div>
                 <div class="card-body d-flex flex-column p-4">
                     <h5 class="fw-bold mb-1">MSI Katana GF66</h5>
@@ -194,7 +197,7 @@
         <div class="col">
             <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
                 <div class="product-img-wrapper rounded-top-4">
-                    <img src="{% static 'images/galaxybook4.webp' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Samsung Galaxy Book 4">
+                    <img src="{{ product.image_url|default:'https://via.placeholder.com/400x300.png?text=No+Image' }}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Samsung Galaxy Book 4">
                 </div>
                 <div class="card-body d-flex flex-column p-4">
                     <h5 class="fw-bold mb-1">Samsung Galaxy Book 4</h5>
@@ -216,7 +219,7 @@
         <div class="col">
             <div class="card h-100 border-0 shadow-sm rounded-4 hover-lift">
                 <div class="product-img-wrapper rounded-top-4">
-                    <img src="{% static 'images/surface5.jfif' %}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Microsoft Surface Laptop 5">
+                    <img src="{{ product.image_url|default:'https://via.placeholder.com/400x300.png?text=No+Image' }}" class="card-img-top product-img" style="height:240px; object-fit:cover;" alt="Microsoft Surface Laptop 5">
                 </div>
                 <div class="card-body d-flex flex-column p-4">
                     <h5 class="fw-bold mb-1">Microsoft Surface 5</h5>

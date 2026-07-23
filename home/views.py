@@ -452,7 +452,8 @@ def checkout(request):
                 'name': product.name,
                 'price': product.price,
                 'quantity': quantity,
-                'image': product.image.url if product.image else product.image_url,
+                # Prioritize image_url, then the uploaded image, then a placeholder.
+                'image': product.image_url or (product.image.url if product.image else None),
                 'seller_name': product.seller.profile.store_name or 'NexCart Seller',
                 'item_total': item_total,
             })
