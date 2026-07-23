@@ -607,6 +607,16 @@ def place_order(request):
 
         # For online payments, create a Razorpay order. We'll handle multiple orders later.
         if payment_method == 'online' and orders:
+            # --- Defensively check for Razorpay credentials ---
+            if not settings.RAZORPAY_KEY_ID or not settings.RAZORPAY_KEY_SECRET:
+                logger.error("Online payment failed: RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET is not configured.")
+                # Revert stock changes since payment cannot proceed
+                for order in orders:
+                    for item in order.items.all():
+                        item.product.stock += item.quantity
+                        item.product.save(update_fields=['stock'])
+                messages.error(request, "Online payments are temporarily unavailable. Please choose another payment method or try again later.")
+                return redirect('checkout')
             client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
             # For simplicity, we create a payment for the first order's total amount.
             # A real multi-order scenario would require a more complex payment aggregation.
@@ -655,6 +665,11 @@ def payment_success(request):
             }
 
             # Initialize the Razorpay client.
+            # --- Defensively check for Razorpay credentials ---
+            if not settings.RAZORPAY_KEY_ID or not settings.RAZORPAY_KEY_SECRET:
+                logger.error("Payment verification failed: Razorpay keys are not configured.")
+                messages.error(request, "Could not verify payment. Please contact support.")
+                return redirect('checkout')
             client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
             
             # Verify the signature. This will raise an error if it's not valid.
