@@ -619,6 +619,9 @@ def place_order(request):
                 "notes": {"order_tracking_code": orders[0].tracking_code}
             })
             
+            orders[0].razorpay_order_id = razorpay_order['id']
+            orders[0].save()
+
             # Pass all details to the template to initiate payment.
             return render(request, 'checkout/payment.html', {
                 'razorpay_order_id': razorpay_order['id'],
@@ -631,34 +634,6 @@ def place_order(request):
             return render(request, 'checkout/order_success.html', {'orders': orders})
 
     return redirect('checkout')
-
-def checkout(request, return_context=False):
-    """
-    Displays the contents of the cart and calculates the total price.
-    Can also return the context dictionary instead of rendering a template.
-    """
-    cart_data = request.session.get('cart', {})
-    product_ids = cart_data.keys()
-    products = Product.objects.filter(id__in=product_ids).select_related('seller__profile')
-    
-    cart_items = []
-    total = Decimal('0')
-    
-    for product in products:
-        quantity = cart_data.get(str(product.id), 0)
-        if quantity > 0:
-            item_total = product.price * quantity
-            cart_items.append({
-                'product_id': product.id, 'name': product.name, 'price': product.price,
-                'quantity': quantity, 'image': product.image_url or (product.image.url if product.image else None),
-                'seller_name': product.seller.profile.store_name or 'NexCart Seller', 'item_total': item_total,
-            })
-            total += item_total
-    
-    context = {'cart': cart_items, 'total': total}
-    if return_context:
-        return context
-    return render(request, 'checkout/checkout.html', context)
 
 @csrf_exempt
 def payment_success(request):

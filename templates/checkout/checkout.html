@@ -294,6 +294,7 @@ type="text"
 class="form-control"
 name="name"
 placeholder="👤 Full Name"
+value="{{ form_data.name|default:request.user.get_full_name|default:'' }}"
 required>
 
 </div>
@@ -305,6 +306,7 @@ type="text"
 class="form-control"
 name="address"
 placeholder="📍 Delivery Address"
+value="{{ form_data.address|default:'' }}"
 required>
 
 </div>
@@ -320,6 +322,7 @@ placeholder="6-digit PIN code"
 inputmode="numeric"
 pattern="[0-9]{6}"
 maxlength="6"
+value="{{ form_data.postal_code|default:'' }}"
 required>
 
 </div>
@@ -332,6 +335,7 @@ class="form-control"
 name="city"
 id="pin-locality"
 placeholder="City and state will be filled from your PIN code"
+value="{{ form_data.city|default:'' }}"
 readonly
 required>
 
@@ -346,6 +350,7 @@ type="text"
 class="form-control"
 name="phone"
 placeholder="📞 Phone Number"
+value="{{ form_data.phone|default:'' }}"
 required>
 
 </div>
