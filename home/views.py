@@ -762,7 +762,7 @@ def my_orders(request):
     # Fetch all orders for the user, prefetching related items and their products.
     orders_qs = Order.objects.filter(user=request.user).prefetch_related('items__product__seller__profile').order_by('-created_at')
 
-    # Process the orders to create a safe context for the template.
+    # Process the orders to create a safe, clean data structure for the template.
     processed_orders = []
     for order in orders_qs:
         processed_items = []
@@ -774,11 +774,13 @@ def my_orders(request):
                 'price': item.price,
                 # Safely get the image URL.
                 'image_url': item.product.image.url if item.product and item.product.image and hasattr(item.product.image, 'url') else None,
-            }
-            processed_items.append(processed_item)
-        # Attach the safely processed items back to the order object for the template.
-        order.processed_items = processed_items
-        processed_orders.append(order)
+            })
+        
+        # Create a dictionary for the order, including the processed items.
+        processed_orders.append({
+            'instance': order,  # The original order object
+            'items': processed_items, # The list of safe item dictionaries
+        })
 
     return render(request, 'tracking/my_orders.html', {'orders': processed_orders})
 
