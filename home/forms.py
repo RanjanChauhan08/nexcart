@@ -24,5 +24,5 @@ class ContactForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        # Use the 'image' field which is an ImageField in the model.
-        fields = ['name', 'description', 'category', 'price', 'stock', 'image']
+        # Use the 'image_url' field which is now a URLField in the model.
+        fields = ['name', 'description', 'category', 'price', 'stock', 'image_url']

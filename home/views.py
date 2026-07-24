@@ -483,7 +483,7 @@ def checkout(request, return_context=False):
 
             cart_items.append({
                 'product_id': product.id, 'name': product.name, 'price': product.price, 'quantity': quantity,
-                'image': product.image.url if product.image and hasattr(product.image, 'url') else None,
+                'image': product.image_url,
                 'seller_name': seller_name, 'item_total': item_total})
             total += item_total
 
@@ -774,7 +774,7 @@ def my_orders(request):
                 'quantity': item.quantity,
                 'price': item.price,
                 # Safely get the image URL.
-                'image_url': item.product.image.url if item.product and item.product.image and hasattr(item.product.image, 'url') else None,
+                'image_url': item.product.image_url if item.product else None,
             })
         # Create a dictionary for the order, including the processed items.
         processed_orders.append({
