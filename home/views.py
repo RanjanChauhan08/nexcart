@@ -767,15 +767,15 @@ def my_orders(request):
     for order in orders_qs:
         processed_items = []
         for item in order.items.all():
-            # Build a dictionary for each item. This avoids template attribute errors.
-            processed_item = {
+            # Build a dictionary for each item and append it directly.
+            # This avoids template attribute errors and fixes the bug.
+            processed_items.append({
                 'name': item.product_name,  # Always use the saved product_name.
                 'quantity': item.quantity,
                 'price': item.price,
                 # Safely get the image URL.
                 'image_url': item.product.image.url if item.product and item.product.image and hasattr(item.product.image, 'url') else None,
             })
-        
         # Create a dictionary for the order, including the processed items.
         processed_orders.append({
             'instance': order,  # The original order object
