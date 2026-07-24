@@ -20,14 +20,6 @@ from django.core.exceptions import ImproperlyConfigured
 def env_bool(name, default=False):
     return os.getenv(name, str(default)).lower() in {'1', 'true', 'yes', 'on'}
 
-# A helper to build the list of allowed hosts. It starts with defaults and adds
-# the PythonAnywhere domain if it exists, making deployment easier.
-def get_allowed_hosts():
-    hosts = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
-    if pa_domain := os.getenv('PYTHONANYWHERE_DOMAIN'):
-        hosts.append(pa_domain)
-    return [host.strip() for host in hosts if host.strip()]
-
 # A custom function to load secret keys and other settings from a `.env` file.
 # This allows you to keep secrets out of your code, which is a major security best practice.
 def load_local_env(path):
@@ -62,15 +54,14 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-development-only-ch
 if not DEBUG and (SECRET_KEY.startswith('django-insecure-') or len(SECRET_KEY) < 50):
     raise ImproperlyConfigured('Set a strong DJANGO_SECRET_KEY before deploying NexCart.')
 
-ALLOWED_HOSTS = get_allowed_hosts()
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+
+# Add the PythonAnywhere domain to ALLOWED_HOSTS if it's set.
+if pa_domain := os.getenv('PYTHONANYWHERE_DOMAIN'):
+    ALLOWED_HOSTS.append(pa_domain)
 
 # Add the PythonAnywhere host to trusted origins for CSRF protection.
-def get_csrf_trusted_origins():
-    origins = os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',')
-    if pa_domain := os.getenv('PYTHONANYWHERE_DOMAIN'):
-        origins.append(f"https://{pa_domain}")
-    return [origin.strip() for origin in origins if origin.strip()]
-CSRF_TRUSTED_ORIGINS = get_csrf_trusted_origins()
+CSRF_TRUSTED_ORIGINS = [f"https://{pa_domain}"] if pa_domain else []
 
 
 # Application definition
