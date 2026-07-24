@@ -12,56 +12,63 @@ import os
 from pathlib import Path
 from decimal import Decimal
 from django.core.exceptions import ImproperlyConfigured
+import dj_database_url
 
 # --- Helper Functions for Environment-based Settings ---
-# These functions help make the settings flexible for both development and production.
-
-# A helper to convert environment variables like 'true', '1', 'yes' into a Python boolean.
 def env_bool(name, default=False):
+    """A helper to convert environment variables like 'true', '1', 'yes' into a Python boolean."""
     return os.getenv(name, str(default)).lower() in {'1', 'true', 'yes', 'on'}
 
-# A custom function to load secret keys and other settings from a `.env` file.
-# This allows you to keep secrets out of your code, which is a major security best practice.
 def load_local_env(path):
     """Load development-only values from .env without adding a dependency."""
-    # Only try to read the file if it actually exists and is a file (not a directory).
     if not path.is_file():
         return
-    # Read the file line by line.
     for line in path.read_text(encoding='utf-8').splitlines():
         line = line.strip()
-        # Ignore empty lines and lines that are comments (start with #).
         if not line or line.startswith('#') or '=' not in line:
             continue
-        # Split the line into a key and a value.
         key, value = line.split('=', 1)
         key = key.strip()
         value = value.strip().strip('"').strip("'")
-        # Set the environment variable, but only if it's not already set.
         os.environ.setdefault(key, value)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# --- Security & Core Settings ---
 
-# --- Security Settings ---
+# Determine if we are in a production environment (like PythonAnywhere)
+# The presence of PYTHONANYWHERE_DOMAIN is a reliable indicator.
+IS_PRODUCTION = 'PYTHONANYWHERE_DOMAIN' in os.environ
+
+# Set DEBUG mode based on the environment.
+DEBUG = not IS_PRODUCTION
+
 # Load environment variables from a .env file ONLY during local development.
-if env_bool('DJANGO_DEBUG', True):
+if not IS_PRODUCTION:
     load_local_env(BASE_DIR / '.env')
 
-DEBUG = env_bool('DJANGO_DEBUG', True)
+# Set the secret key. In production, this MUST be set in the WSGI file.
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-development-only-change-before-deploy')
-if not DEBUG and (SECRET_KEY.startswith('django-insecure-') or len(SECRET_KEY) < 50):
-    raise ImproperlyConfigured('Set a strong DJANGO_SECRET_KEY before deploying NexCart.')
+if IS_PRODUCTION and (SECRET_KEY.startswith('django-insecure-') or len(SECRET_KEY) < 50):
+    raise ImproperlyConfigured('Set a strong DJANGO_SECRET_KEY in your WSGI file before deploying.')
 
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+# Configure allowed hosts.
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+if IS_PRODUCTION:
+    # On PythonAnywhere, your domain name is set as an environment variable in the wsgi.py file.
+    pythonanywhere_host = os.getenv('PYTHONANYWHERE_DOMAIN')
+    if pythonanywhere_host:
+        ALLOWED_HOSTS.append(pythonanywhere_host)
+    else:
+        # This is a fallback to prevent DisallowedHost errors if the env var is missing.
+        # It's better to be explicit.
+        ALLOWED_HOSTS.append('ranjan8883375.pythonanywhere.com')
 
-# Add the PythonAnywhere domain to ALLOWED_HOSTS if it's set.
-if pa_domain := os.getenv('PYTHONANYWHERE_DOMAIN'):
-    ALLOWED_HOSTS.append(pa_domain)
 
-# Add the PythonAnywhere host to trusted origins for CSRF protection.
-CSRF_TRUSTED_ORIGINS = [f"https://{pa_domain}"] if pa_domain else []
+# CSRF protection must trust the secure production domain.
+if IS_PRODUCTION:
+    CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS if host not in ['127.0.0.1', 'localhost']]
 
 
 # Application definition
@@ -73,11 +80,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic', # Use this for development to mimic production static file handling
     'django.contrib.staticfiles',
 ]
 
-# MIDDLEWARE is a framework of hooks into Django's request/response processing.
-# The order is important. For example, SecurityMiddleware should come first.
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -89,11 +95,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# The root URL configuration file for the project.
 ROOT_URLCONF = 'temp1.urls'
 
-# --- Template Configuration ---
-# This tells Django where to find your HTML templates.
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -109,98 +112,54 @@ TEMPLATES = [
     },
 ]
 
-# The entry point for WSGI-compatible web servers to serve your project.
 WSGI_APPLICATION = 'temp1.wsgi.application'
 
 
 # --- Database Configuration ---
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-# Using BigAutoField is the modern standard to prevent primary key exhaustion.
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# The `dj_database_url` package allows you to configure your database from a single URL string,
-# which is perfect for production environments where the database URL is provided as an environment variable.
-import dj_database_url
-
-# Determine if we are using SQLite by checking if DATABASE_URL is set.
-using_sqlite = 'DATABASE_URL' not in os.environ
 
 DATABASES = {
     'default': dj_database_url.config(
-        # If DATABASE_URL is not set in the environment, it falls back to using a local SQLite file.
         default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
         conn_max_age=600,
-        # SSL is required for most cloud databases but not for SQLite. This logic handles that automatically.
-        ssl_require=False if using_sqlite else env_bool('DJANGO_DB_SSL', not DEBUG)
+        ssl_require=IS_PRODUCTION
     )
 }
 
 
 # --- Password Validation ---
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 
 # --- Internationalization & Localization ---
-# https://docs.djangoproject.com/en/6.0/topics/i18n/
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
 # --- Static & Media File Configuration ---
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
-
-# STATIC_URL is the URL prefix for static files (CSS, JavaScript, Images).
 STATIC_URL = 'static/'
-# STATICFILES_DIRS tells Django where to find your project's static files, in addition to each app's 'static' directory.
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
-# STATIC_ROOT is the single directory where `collectstatic` will gather all static files for production.
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+# Use WhiteNoise for static files in production.
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Use WhiteNoise for static files in production, but not for local development.
-# WhiteNoise allows your web app to serve its own static files efficiently without needing a separate web server like Nginx.
-if not DEBUG:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# For user-uploaded files (MEDIA), we use Cloudinary in production.
-# This offloads file storage to a dedicated service, which is more scalable and secure.
-# MEDIA_URL is the URL prefix for user-uploaded files.
 MEDIA_URL = '/media/'
-# MEDIA_ROOT is the local directory where media files are stored during development.
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # --- Email Configuration ---
-# These settings configure how Django sends emails (e.g., for verification codes).
-# They are loaded from environment variables for security.
 EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() in {'1', 'true', 'yes'}
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', os.getenv('GMAIL_ADDRESS', ''))
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', os.getenv('GMAIL_APP_PASSWORD', ''))
-# The default "from" address for emails sent by the site.
+EMAIL_USE_TLS = env_bool('EMAIL_USE_TLS', True)
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER or 'noreply@nexcart.local')
 
 # --- Razorpay Configuration ---
@@ -210,16 +169,14 @@ RAZORPAY_WEBHOOK_SECRET = os.getenv('RAZORPAY_WEBHOOK_SECRET')
 COD_HANDLING_FEE = Decimal(os.getenv('COD_HANDLING_FEE', '100.00'))
 
 # --- Production Security Headers ---
-# These settings enhance security when running in production (DEBUG=False).
-
-# Hosts such as Render terminate HTTPS before passing requests to Django.
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = env_bool('DJANGO_SECURE_SSL_REDIRECT', not DEBUG)
-SESSION_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_SECURE = not DEBUG
-SECURE_HSTS_SECONDS = int(os.getenv('DJANGO_SECURE_HSTS_SECONDS', '0'))
-SECURE_HSTS_INCLUDE_SUBDOMAINS = SECURE_HSTS_SECONDS > 0
-SECURE_HSTS_PRELOAD = SECURE_HSTS_SECONDS > 0
+if IS_PRODUCTION:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = int(os.getenv('DJANGO_SECURE_HSTS_SECONDS', '31536000')) # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
 # --- Authentication & Authorization ---
 LOGIN_URL = 'login'
