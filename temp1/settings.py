@@ -51,11 +51,12 @@ def load_local_env(path):
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load environment variables from a .env file in the project root.
-# This is the directory that contains the manage.py file.
-load_local_env(BASE_DIR / '.env')
 
 # --- Security Settings ---
+# Load environment variables from a .env file ONLY during local development.
+if env_bool('DJANGO_DEBUG', True):
+    load_local_env(BASE_DIR / '.env')
+
 DEBUG = env_bool('DJANGO_DEBUG', True)
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-development-only-change-before-deploy')
 if not DEBUG and (SECRET_KEY.startswith('django-insecure-') or len(SECRET_KEY) < 50):
