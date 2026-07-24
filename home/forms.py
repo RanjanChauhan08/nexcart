@@ -24,6 +24,5 @@ class ContactForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        # We are removing the 'image' field because file uploads are blocked on free
-        # PythonAnywhere accounts. Sellers should use the 'image_url' field instead.
-        fields = ['name', 'description', 'category', 'price', 'stock', 'image_url']
+        # Use the 'image' field which is an ImageField in the model.
+        fields = ['name', 'description', 'category', 'price', 'stock', 'image']

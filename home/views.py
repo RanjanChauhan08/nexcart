@@ -230,6 +230,8 @@ def seller_required(view):
 @seller_required
 def seller_dashboard(request):
     """The main dashboard for sellers to manage their profile, products, and orders."""
+    # Initialize the form outside the POST block to ensure it's always available.
+    product_form = ProductForm()
     if request.method == 'POST':
         action = request.POST.get('action')
         
@@ -311,10 +313,7 @@ def seller_dashboard(request):
             else:
                 # If the form is invalid, keep the submitted data to show errors.
                 messages.error(request, 'Please correct the errors below.')
-    else:
-        # For a GET request, create a new, empty form.
-        product_form = ProductForm()
-        
+
     # For a GET request, render the dashboard with the seller's products, orders, and a blank product form.
     return render(request, 'seller/dashboard.html', {
         'products': Product.objects.filter(seller=request.user),
