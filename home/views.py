@@ -90,16 +90,20 @@ def email_login(request):
     if request.method == 'POST':
         email = request.POST.get('email', '').strip().lower()
         action = request.POST.get('action', 'code')
-        user = User.objects.filter(email__iexact=email).first()
         
+        # Ensure an email is provided for any action.
+        if not email:
+            messages.error(request, 'Please enter your email address.')
+            return render(request, 'registration/login.html')
+
+        user = User.objects.filter(email__iexact=email).first()
         # Logic for password-based login.
         if action == 'password':
             if user and user.has_usable_password() and check_password(request.POST.get('password', ''), user.password):
                 login(request, user)
                 return redirect('home')
             messages.error(request, 'Incorrect email address or password. You can also sign in with an email code.')
-        # Logic for email code-based login.
-        elif user:
+        elif user: # Logic for email code-based login.
             if _send_email_code(request, email, 'login', user_id=user.id):
                 return redirect('verify_email')
         else:
