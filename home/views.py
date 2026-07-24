@@ -48,7 +48,7 @@ def signup(request):
     if request.method == 'POST':
         # Get form data, cleaning it up where necessary.
         email = request.POST.get('email', '').strip().lower()
-        role = request.POST.get('role', 'buyer')
+        role = request.POST.get('role', 'buyer')  #default value here is buyer
         password = request.POST.get('password', '')
         password_confirm = request.POST.get('password_confirm', '')
         
@@ -474,7 +474,7 @@ def checkout(request, return_context=False):
 
             cart_items.append({
                 'product_id': product.id, 'name': product.name, 'price': product.price, 'quantity': quantity,
-                'image': product.image_url or (product.image.url if product.image else None),
+                'image': product.image.url if product.image else None,
                 'seller_name': seller_name, 'item_total': item_total})
             total += item_total
 
@@ -700,6 +700,48 @@ def payment_success(request):
 
     return redirect('checkout')
 
+@csrf_exempt
+def razorpay_webhook(request):
+    """
+    Handles incoming webhooks from Razorpay to reliably update payment status.
+    This is more reliable than the client-side redirect.
+    """
+    # --- Defensively check for webhook secret ---
+    if not settings.RAZORPAY_WEBHOOK_SECRET:
+        logger.error("Razorpay webhook processing failed: RAZORPAY_WEBHOOK_SECRET is not configured.")
+        # Return a 500 error, but don't expose the reason.
+        return HttpResponse(status=500)
+
+    if request.method == 'POST':
+        try:
+            # Get the signature and payload from the request.
+            signature = request.headers.get('x-razorpay-signature')
+            payload = request.body
+
+            # Initialize the Razorpay client.
+            client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+            
+            # Verify the webhook signature. This will raise an error if it's not valid.
+            client.utility.verify_webhook_signature(payload, signature, settings.RAZORPAY_WEBHOOK_SECRET)
+
+            # If verification is successful, process the event.
+            event = json.loads(payload)
+            if event['event'] == 'payment.paid':
+                razorpay_order_id = event['payload']['payment']['entity']['order_id']
+                payment_id = event['payload']['payment']['entity']['id']
+                
+                # Find the order and update its status.
+                order = Order.objects.get(razorpay_order_id=razorpay_order_id)
+                order.payment_status = 'paid'
+                order.razorpay_payment_id = payment_id
+                order.save(update_fields=['payment_status', 'razorpay_payment_id'])
+                logger.info(f"Webhook: Payment confirmed for order {order.tracking_code}.")
+        except Exception as e:
+            logger.error(f"Razorpay webhook verification failed: {e}")
+            return HttpResponse(status=400)
+    # Acknowledge receipt of the webhook.
+    return HttpResponse(status=200)
+
 # --- Order Tracking Views ---
 
 @login_required
@@ -722,7 +764,7 @@ def my_orders(request):
                 'quantity': item.quantity,
                 'price': item.price,
                 # Safely get the image URL.
-                'image_url': item.product.image_url if item.product and item.product.image_url else (item.product.image.url if item.product and item.product.image else None),
+                'image_url': item.product.image.url if item.product and item.product.image else None,
             }
             processed_items.append(processed_item)
         # Attach the safely processed items back to the order object for the template.

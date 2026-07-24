@@ -39,18 +39,12 @@ class Product(models.Model):
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='product_images/', blank=True, null=True)
-    image_url = models.URLField(blank=True)
     stock = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-created_at']
-
-    def clean(self):
-        """Ensure that either an image file is uploaded or an image URL is provided, but not both."""
-        if self.image and self.image_url:
-            raise models.ValidationError("Please provide either an image file or an image URL, not both.")
 
     def __str__(self):
         return self.name

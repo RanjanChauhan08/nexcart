@@ -82,8 +82,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cloudinary',
-    'cloudinary_storage',
 ]
 
 # MIDDLEWARE is a framework of hooks into Django's request/response processing.
@@ -196,9 +194,6 @@ if not DEBUG:
 
 # For user-uploaded files (MEDIA), we use Cloudinary in production.
 # This offloads file storage to a dedicated service, which is more scalable and secure.
-if not DEBUG:
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
 # MEDIA_URL is the URL prefix for user-uploaded files.
 MEDIA_URL = '/media/'
 # MEDIA_ROOT is the local directory where media files are stored during development.
@@ -216,18 +211,10 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', os.getenv('GMAIL_APP_PASS
 # The default "from" address for emails sent by the site.
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER or 'noreply@nexcart.local')
 
-# --- Third-Party Service Configuration ---
-
-# Cloudinary credentials, loaded from environment variables.
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
-}
-
 # --- Razorpay Configuration ---
 RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID')
 RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET')
+RAZORPAY_WEBHOOK_SECRET = os.getenv('RAZORPAY_WEBHOOK_SECRET')
 COD_HANDLING_FEE = Decimal(os.getenv('COD_HANDLING_FEE', '100.00'))
 
 # --- Production Security Headers ---

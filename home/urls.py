@@ -45,5 +45,6 @@ urlpatterns = [
     path('remove-from-cart/<int:product_id>', login_required(views.remove_from_cart), name="remove_from_cart"),
     path('place-order', login_required(views.place_order), name="place_order"),
     path('payment-success/', views.payment_success, name='payment_success'),
+    path('payment/webhook/', views.razorpay_webhook, name='razorpay_webhook'),
     path('servicebooked', login_required(views.servicebooked), name="servicebooked")
 ]
