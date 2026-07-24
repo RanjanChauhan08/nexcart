@@ -767,8 +767,8 @@ def my_orders(request):
     for order in orders_qs:
         processed_items = []
         for item in order.items.all():
-            # Build a dictionary for each item and append it directly.
-            # This avoids template attribute errors and fixes the bug.
+            # Build a dictionary for each item and append it directly to the list.
+            # This is the corrected logic.
             processed_items.append({
                 'name': item.product_name,  # Always use the saved product_name.
                 'quantity': item.quantity,
