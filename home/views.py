@@ -89,25 +89,31 @@ def email_login(request):
         
     if request.method == 'POST':
         email = request.POST.get('email', '').strip().lower()
-        action = request.POST.get('action', 'code')
+        action = request.POST.get('action') # Get action explicitly, no default here
         
         # Ensure an email is provided for any action.
-        if not email:
+        if not email and action in ['password', 'send_code']:
             messages.error(request, 'Please enter your email address.')
             return render(request, 'registration/login.html')
 
         user = User.objects.filter(email__iexact=email).first()
-        # Logic for password-based login.
+
         if action == 'password':
+            # Logic for password-based login.
             if user and user.has_usable_password() and check_password(request.POST.get('password', ''), user.password):
                 login(request, user)
                 return redirect('home')
             messages.error(request, 'Incorrect email address or password. You can also sign in with an email code.')
-        elif user: # Logic for email code-based login.
+        elif action == 'send_code': # Explicit action for sending code
+            if not user:
+                messages.error(request, 'No NexCart account exists with that email. Please sign up first.')
+            # If user exists, send the code
             if _send_email_code(request, email, 'login', user_id=user.id):
                 return redirect('verify_email')
         else:
-            messages.error(request, 'No NexCart account exists with that email. Please sign up first.')
+            # If no specific action is provided, or an invalid action,
+            # we should re-render the form with an error message.
+            messages.error(request, 'Please select a login method (password or email code).')
             
     return render(request, 'registration/login.html')
 
