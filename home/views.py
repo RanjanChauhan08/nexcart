@@ -240,8 +240,7 @@ def seller_required(view):
 @seller_required
 def seller_dashboard(request):
     """The main dashboard for sellers to manage their profile, products, and orders."""
-    # Initialize the form outside the POST block to ensure it's always available.
-    product_form = ProductForm()
+    product_form = ProductForm() # Initialize a blank form for GET requests.
     if request.method == 'POST':
         action = request.POST.get('action')
         
@@ -313,7 +312,7 @@ def seller_dashboard(request):
 
         # Action: Add a new product to the store.
         if action == 'publish_product':
-            product_form = ProductForm(request.POST, request.FILES)
+            product_form = ProductForm(request.POST) # Repopulate form with submitted data
             if product_form.is_valid():
                 product = product_form.save(commit=False)
                 product.seller = request.user
