@@ -44,9 +44,9 @@ IS_PRODUCTION = 'PYTHONANYWHERE_DOMAIN' in os.environ
 # Set DEBUG mode based on the environment.
 DEBUG = not IS_PRODUCTION
 
-# Load environment variables from a .env file ONLY during local development.
-if not IS_PRODUCTION:
-    load_local_env(BASE_DIR / '.env')
+# Load environment variables from a .env file. This works for local dev
+# and for management commands on the server if a .env file is created there.
+load_local_env(BASE_DIR / '.env')
 
 # Set the secret key. In production, this MUST be set in the WSGI file.
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-development-only-change-before-deploy')
