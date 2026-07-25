@@ -759,16 +759,16 @@ def my_orders(request):
     Displays a list of all orders placed by the current user.
     This view now processes order data to prevent template errors if a product has been deleted.
     """
-    # Fetch all orders for the user, prefetching related items and their products.
-    orders_qs = Order.objects.filter(user=request.user).prefetch_related('items__product__seller__profile').order_by('-created_at')
+    # FIX: Fetch ONLY the orders placed by the current logged-in user.
+    # This is the correct and simplified logic.
+    orders_qs = Order.objects.filter(user=request.user).prefetch_related('items__product').order_by('-created_at')
 
     # Process the orders to create a safe, clean data structure for the template.
     processed_orders = []
     for order in orders_qs:
         processed_items = []
         for item in order.items.all():
-            # Build a dictionary for each item and append it directly to the list.
-            # This is the corrected logic.
+            # Build a dictionary for each item to ensure safe access in the template.
             processed_items.append({
                 'name': item.product_name,  # Always use the saved product_name.
                 'quantity': item.quantity,
@@ -776,7 +776,6 @@ def my_orders(request):
                 # Safely get the image URL.
                 'image_url': item.product.image_url if item.product else None,
             })
-        # Create a dictionary for the order, including the processed items.
         processed_orders.append({
             'instance': order,  # The original order object
             'items': processed_items, # The list of safe item dictionaries
