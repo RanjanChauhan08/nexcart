@@ -22,7 +22,7 @@
                             <div class="text-end">
                                 <span class="badge fs-6 {% if order.status == 'cancelled' %}text-bg-danger{% elif order.status == 'delivered' %}text-bg-success{% else %}text-bg-primary{% endif %}">{{ order.get_status_display }}</span>
                                 <br>
-                                <a href="{% url 'order_tracking' order.tracking_code %}" class="btn btn-dark btn-sm rounded-pill px-3 mt-2">Track Order</a>
+                                <a href="{% url 'order_tracking' tracking_code=order.tracking_code %}" class="btn btn-dark btn-sm rounded-pill px-3 mt-2">Track Order</a>
                             </div>
                         </div>
                     </div>

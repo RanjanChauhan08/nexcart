@@ -20,8 +20,8 @@
                     <div class="fw-semibold">{{ step.label }}</div>
                     <div class="small text-muted">{{ step.location }}{% if step.current %} · Current stage{% endif %}</div>
                 </div>{% endfor %}</div>
-            <h2 class="h6 fw-bold mt-2">Seller updates</h2>{% for update in order.tracking_updates.all %}
-            <div class="small border-start ps-3 mb-2"><strong>{{ update.get_status_display }}</strong> — {{ update.location }}<br><span class="text-muted">{{ update.note|default_if_none:'' }} · {{ update.created_at|date:'d M, H:i' }}</span></div>{% endfor %}</div>
+            <h2 class="h5 fw-bold mt-4 mb-3">Seller Updates</h2>{% for update in order.tracking_updates.all|slice:":5" %}
+            <div class="small border-start ps-3 mb-3"><strong>{{ update.get_status_display }}</strong> — {{ update.location }}<br><span class="text-muted">{{ update.note|default_if_none:'' }} · {{ update.created_at|date:'d M, H:i' }}</span></div>{% empty %}<div class="small text-muted">No seller updates have been posted yet.</div>{% endfor %}</div>
     </div>
     <div class="text-center mt-4">
         <a href="{% url 'my_orders' %}" class="btn btn-outline-secondary">← Back to My Orders</a>
