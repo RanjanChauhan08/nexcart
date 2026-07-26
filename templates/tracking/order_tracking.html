@@ -20,7 +20,7 @@
                     <div class="fw-semibold">{{ step.label }}</div>
                     <div class="small text-muted">{{ step.location }}{% if step.current %} · Current stage{% endif %}</div>
                 </div>{% endfor %}</div>
-            <h2 class="h6 fw-bold mt-2">Seller updates</h2>{% for update in order.tracking_updates.all|dictsort:"created_at" %}
+            <h2 class="h6 fw-bold mt-2">Seller updates</h2>{% for update in order.tracking_updates.all %}
             <div class="small border-start ps-3 mb-2"><strong>{{ update.get_status_display }}</strong> — {{ update.location }}<br><span class="text-muted">{{ update.note|default_if_none:'' }} · {{ update.created_at|date:'d M, H:i' }}</span></div>{% endfor %}</div>
     </div>
     <div class="text-center mt-4">
