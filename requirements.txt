@@ -1,7 +1,5 @@
-Django==4.2.30
-gunicorn
+Django
 razorpay
 dj-database-url
 whitenoise
-psycopg2-binary
-Pillow
+gunicorn

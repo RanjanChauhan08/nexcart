@@ -790,9 +790,15 @@ def order_tracking(request, tracking_code):
     if not order:
         raise PermissionDenied('You cannot view this order.')
     status_keys = [choice[0] for choice in Order.STATUS_CHOICES if choice[0] != 'cancelled']
-    last_shipment_update = order.tracking_updates.exclude(status='cancelled').order_by('-created_at').first()
-    progress_status = last_shipment_update.status if order.status == 'cancelled' and last_shipment_update else order.status
-    current_step = status_keys.index(progress_status)
+    
+    # Determine the current step in the timeline.
+    # If the order is cancelled, we find the last status *before* it was cancelled to show the progress.
+    if order.status == 'cancelled':
+        last_shipment_update = order.tracking_updates.exclude(status='cancelled').order_by('-created_at').first()
+        progress_status = last_shipment_update.status if last_shipment_update else 'placed'
+    else:
+        progress_status = order.status
+    current_step = status_keys.index(progress_status) if progress_status in status_keys else -1
     origin = order.seller.profile.city if order.seller and hasattr(order.seller, 'profile') and order.seller.profile.city else 'Seller dispatch centre'
     destination = order.delivery_city
     
