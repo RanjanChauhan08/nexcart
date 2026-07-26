@@ -1,31 +1,50 @@
 import uuid
-
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 def generate_tracking_code():
+    """Generates a unique, human-readable tracking code for new orders."""
     return f"NC{uuid.uuid4().hex[:10].upper()}"
 
 
 class Profile(models.Model):
+    """
+    Extends the default Django User model to include application-specific
+    fields like user role, location, and email verification status.
+    """
     ROLE_CHOICES = [
         ('buyer', 'Buyer'),
         ('seller', 'Seller'),
     ]
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='buyer')
-    city = models.CharField(max_length=100, blank=True)
+    city = models.CharField(max_length=100, blank=True, help_text="Seller's city for dispatch location.")
     email_verified = models.BooleanField(default=False)
-    store_name = models.CharField(max_length=150, blank=True)
+    store_name = models.CharField(max_length=150, blank=True, help_text="The public-facing name of the seller's store.")
 
     def __str__(self):
-        return f"{self.user.username} ({self.role})"
+        return f"{self.user.username} ({self.get_role_display()})"
+
+
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    """
+    A signal that automatically creates a Profile for a new User,
+    or saves the existing one. This ensures every user has a profile.
+    """
+    if created:
+        Profile.objects.create(user=instance)
+    instance.profile.save()
 
 
 class Product(models.Model):
+    """Represents an item available for sale by a seller."""
     CATEGORY_CHOICES = [
         ('phone', 'Phones'),
         ('laptop', 'Laptops'),
@@ -40,17 +59,21 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image_url = models.URLField(max_length=1024, blank=True, null=True, help_text="Enter the URL of the product image.")
     stock = models.PositiveIntegerField(default=0)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, help_text="Inactive products are hidden from the store.")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self):
-        return self.name
+        return f"{self.name} by {self.seller.profile.store_name or self.seller.username}"
 
 
 class Order(models.Model):
+    """
+    Represents a single transaction between a buyer and a seller for one or
+    more products. An order is created for each seller in a customer's cart.
+    """
     STATUS_CHOICES = [
         ('placed', 'Order placed'),
         ('confirmed', 'Confirmed'),
@@ -70,7 +93,8 @@ class Order(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
-    seller = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='seller_orders')
+    # Use PROTECT to prevent deleting a seller who has existing orders.
+    seller = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True, related_name='seller_orders')
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     customer_name = models.CharField(max_length=150, blank=True)
     customer_phone = models.CharField(max_length=20, blank=True)
@@ -93,18 +117,28 @@ class Order(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"Order {self.tracking_code}"
+        return f"Order {self.tracking_code} for {self.user.username}"
 
 
 class OrderItem(models.Model):
+    """
+    Represents a single line item within an Order, linking a specific
+    product, its quantity, and its price at the time of purchase.
+    """
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    # Use SET_NULL so that if a product is deleted, the order history remains.
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
+    # Store name and price to preserve order details even if the product changes.
     product_name = models.CharField(max_length=150)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
 
+    def __str__(self):
+        return f"{self.quantity} x {self.product_name} in Order {self.order.tracking_code}"
+
 
 class TrackingUpdate(models.Model):
+    """Logs each step of an order's journey from placement to delivery."""
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='tracking_updates')
     status = models.CharField(max_length=20, choices=Order.STATUS_CHOICES)
     location = models.CharField(max_length=150)
@@ -114,11 +148,14 @@ class TrackingUpdate(models.Model):
     class Meta:
         ordering = ['created_at']
 
+    def __str__(self):
+        return f"Update for {self.order.tracking_code}: {self.get_status_display()}"
+
 
 class Contact(models.Model):
+    """Stores submissions from the 'Contact Us' form."""
     name = models.CharField(max_length=122)
     email = models.EmailField(max_length=122)
-    # Add a validator to ensure the phone number consists of 10 digits.
     phnumber = models.CharField(
         max_length=10,
         validators=[RegexValidator(r'^\d{10}$', 'Enter a valid 10-digit phone number.')]
@@ -126,10 +163,11 @@ class Contact(models.Model):
     reason_for_contacting = models.TextField()
 
     def __str__(self):
-        return self.name
+        return f"Contact from {self.name} ({self.email})"
 
 
 class ServiceBooking(models.Model):
+    """Stores submissions for device repair service requests."""
     DEVICE_CHOICES = [
         ('phone', 'Phone'),
         ('tablet', 'Tablet'),
@@ -147,4 +185,4 @@ class ServiceBooking(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.device_type} - {self.device_model}"
+        return f"Service booking for {self.device_type} ({self.device_model}) by {self.customer_name}"

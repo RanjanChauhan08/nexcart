@@ -1,19 +1,42 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Order Placed{% endblock title %}
+{% block title %}Order Successful{% endblock title %}
 
 {% block body %}
 <div class="container py-5 text-center">
-    <div class="py-5">
-        <h1 class="fw-bold text-success">🎉 Order Placed Successfully!</h1>
-<p class="text-muted mt-3">Thank you for your purchase. Your order is being processed.</p>
-        {% if orders %}
-        <p class="mt-3">Your tracking code{{ orders|length|pluralize }}:</p>
-        {% for order in orders %}
-        <a href="{% url 'order_tracking' order.tracking_code %}" class="btn btn-outline-success m-1">{{ order.tracking_code }} — Track order</a>
-        {% endfor %}
-        {% endif %}
-        <a href="{% url 'home' %}" class="btn btn-dark rounded-pill px-5 mt-3">Back to Home</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <img src="{% static 'images/order_confirmed.svg' %}" alt="Order Confirmed" class="mb-4" style="max-width: 250px;">
+            <h1 class="display-5 fw-bold">Thank You for Your Order!</h1>
+            <p class="lead text-muted mb-4">Your order has been placed successfully and the seller has been notified.</p>
+
+            {% for order in orders %}
+            <div class="card text-start shadow-sm mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <span>Order #{{ order.tracking_code }}</span>
+                    <span class="badge bg-success">Placed</span>
+                </div>
+                <div class="card-body p-4">
+                    <p class="card-text">
+                        <strong>Total Amount:</strong> ₹{{ order.total_amount|floatformat:2 }}
+                    </p>
+                    <p class="card-text mb-0">
+                        <strong>Delivery Address:</strong> {{ order.delivery_address }}
+                    </p>
+                </div>
+                <div class="card-footer bg-white d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{% url 'order_tracking' tracking_code=order.tracking_code %}" class="btn btn-primary">
+                        Track Your Order
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="mt-4">
+                <a href="{% url 'home' %}" class="btn btn-outline-secondary">Go to Home</a>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock body %}

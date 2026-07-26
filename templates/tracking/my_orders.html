@@ -29,11 +29,9 @@
                     <div class="card-body p-4">
                         <ul class="list-unstyled mb-0">
                             {% for item in order.items.all %}
-                                {% with image_url=item.product.image_url|default:item.product.image.url %}
                                 <li class="d-flex align-items-center {% if not forloop.last %}mb-3 pb-3 border-bottom{% endif %}">
                                     <!-- Product Image -->
-                                    <!-- Requesting a 120x120 cropped and optimized image from Cloudinary -->
-                                    <img src="{% if 'cloudinary' in image_url %}{{ image_url|replace:'/upload/':'/upload/w_120,h_120,c_fill,q_auto,f_auto/' }}{% else %}{{ image_url|default:'https://via.placeholder.com/100x100.png?text=No+Image' }}{% endif %}"
+                                    <img src="{{ item.product.image_url|default:'https://via.placeholder.com/100x100.png?text=No+Image' }}"
                                          alt="{{ item.product_name }}" 
                                          class="rounded-3 me-3" 
                                          style="width: 60px; height: 60px; object-fit: cover;">
@@ -45,7 +43,6 @@
                                     </div>
                                     <div class="text-end fw-bold">₹{{ item.price|floatformat:2 }}</div>
                                 </li>
-                                {% endwith %}
                             {% endfor %}
                         </ul>
                     </div>

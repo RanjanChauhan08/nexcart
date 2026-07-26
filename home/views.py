@@ -198,14 +198,17 @@ def verify_email(request):
             if User.objects.filter(email__iexact=email).exists():
                 messages.error(request, 'An account already exists with this email. Please log in.')
                 return redirect('login')
-            # Create a new user and their profile.
-            username = f"{email.split('@')[0][:120]}_{uuid.uuid4().hex[:8]}"
-            user = User.objects.create(username=username, email=email)
-            user.password = verification['password_hash']
-            user.save(update_fields=['password'])
-            user.profile.role = verification['role']
-            user.profile.email_verified = True
-            user.profile.save(update_fields=['role', 'email_verified'])
+            # Create the user and profile within a single transaction to ensure data integrity.
+            with transaction.atomic():
+                username = f"{email.split('@')[0][:120]}_{uuid.uuid4().hex[:8]}"
+                user = User.objects.create(username=username, email=email)
+                user.password = verification['password_hash']
+                user.save(update_fields=['password'])
+                Profile.objects.create(
+                    user=user,
+                    role=verification['role'],
+                    email_verified=True
+                )
             # Clean up the session and log the new user in.
             request.session.pop('email_verification', None)
             login(request, user)
@@ -422,6 +425,14 @@ def add_to_cart(request):
                 messages.error(request, 'This product is no longer available.')
             return redirect('buynow')
 
+        current_quantity_in_cart = cart.get(product_id, 0)
+        
+        # Check if adding the new quantity exceeds available stock.
+        if product.stock < current_quantity_in_cart + quantity:
+            messages.error(request, f'Only {product.stock} units of "{product.name}" are available. You already have {current_quantity_in_cart} in your cart.')
+            return redirect('buynow')
+
+
         # Add the product to the cart or update its quantity.
         current_quantity = cart.get(product_id, 0)
         cart[product_id] = current_quantity + quantity
@@ -467,12 +478,21 @@ def checkout(request, return_context=False):
     products = Product.objects.filter(id__in=product_ids).select_related('seller__profile')
 
     cart_items = []
+    unavailable_items = False
     total = Decimal('0')
 
     # Loop through the products and build a list of cart items with all necessary details for display.
     # This is more secure than trusting price data stored in the session.
     for product in products:
         quantity = cart_data.get(str(product.id), 0)
+        # If a product in the cart has gone out of stock, remove it.
+        if product.stock < quantity:
+            del cart_data[str(product.id)]
+            unavailable_items = True
+            messages.warning(request, f'"{product.name}" has insufficient stock and was removed from your cart.')
+            continue
+
+
         if quantity > 0:
             item_total = product.price * quantity
             # Safely get the seller's store name.
@@ -485,6 +505,10 @@ def checkout(request, return_context=False):
                 'image': product.image_url,
                 'seller_name': seller_name, 'item_total': item_total})
             total += item_total
+
+    # If any items were removed, update the session and inform the user.
+    if unavailable_items:
+        request.session['cart'] = cart_data
 
     context = {'cart': cart_items, 'total': total}
     if return_context:
@@ -622,37 +646,39 @@ def place_order(request):
 
         # For online payments, create a Razorpay order. We'll handle multiple orders later.
         if payment_method == 'online' and orders:
-            # --- Defensively check for Razorpay credentials ---
+            # Defensively check for Razorpay credentials before proceeding.
             if not settings.RAZORPAY_KEY_ID or not settings.RAZORPAY_KEY_SECRET:
                 logger.error("Online payment failed: RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET is not configured.")
-                # Revert stock changes since payment cannot proceed
-                for order in orders:
-                    for item in order.items.all():
-                        item.product.stock += item.quantity
-                        item.product.save(update_fields=['stock'])
                 messages.error(request, "Online payments are temporarily unavailable. Please choose another payment method or try again later.")
-                return redirect('checkout')
+                # Re-render checkout page with an error.
+                checkout_context = checkout(request, return_context=True)
+                checkout_context['form_data'] = request.POST
+                return render(request, 'checkout/checkout.html', checkout_context)
+
             client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-            # For simplicity, we create a payment for the first order's total amount.
-            # A real multi-order scenario would require a more complex payment aggregation.
-            payment_amount = int(orders[0].total_amount * 100) # Amount in paise
+            # CRITICAL FIX: Aggregate the total amount from ALL created orders for a single payment.
+            total_payment_amount = sum(o.total_amount for o in orders)
+            payment_amount_paise = int(total_payment_amount * 100) # Amount in paise
 
             razorpay_order = client.order.create({
-                "amount": payment_amount,
+                "amount": payment_amount_paise,
                 "currency": "INR",
-                "receipt": orders[0].tracking_code,
-                "notes": {"order_tracking_code": orders[0].tracking_code}
+                "receipt": f"nexcart-group-{orders[0].tracking_code}", # Use a group receipt
+                "notes": {"order_tracking_codes": ", ".join(o.tracking_code for o in orders)}
             })
             
-            orders[0].razorpay_order_id = razorpay_order['id']
-            orders[0].save()
+            # Assign the single Razorpay Order ID to ALL orders in this transaction.
+            razorpay_order_id = razorpay_order['id']
+            for order in orders:
+                order.razorpay_order_id = razorpay_order_id
+                order.save(update_fields=['razorpay_order_id'])
 
             # Pass all details to the template to initiate payment.
             return render(request, 'checkout/payment.html', {
                 'razorpay_order_id': razorpay_order['id'],
                 'razorpay_key_id': settings.RAZORPAY_KEY_ID,
-                'amount': payment_amount,
-                'order': orders[0]
+                'amount': payment_amount_paise,
+                'order': orders[0] # Pass first order for display purposes
             })
         else: # For COD
             request.session['cart'] = {}
@@ -691,14 +717,15 @@ def payment_success(request):
             client.utility.verify_payment_signature(params_dict)
 
             # If verification is successful, update the order status.
-            # Note: In a multi-order scenario, you would need to find all related orders.
-            order = Order.objects.get(razorpay_order_id=order_id)
-            order.payment_status = 'paid'
-            order.razorpay_payment_id = payment_id
-            order.save()
+            # Find all orders associated with this Razorpay order ID.
+            orders_to_update = Order.objects.filter(razorpay_order_id=order_id)
+            for order in orders_to_update:
+                order.payment_status = 'paid'
+                order.razorpay_payment_id = payment_id
+                order.save(update_fields=['payment_status', 'razorpay_payment_id'])
             
             request.session['cart'] = {}
-            return render(request, 'checkout/order_success.html', {'orders': [order]})
+            return render(request, 'checkout/order_success.html', {'orders': orders_to_update})
 
         except Exception as e:
             # If signature verification fails or any other error occurs.
@@ -739,11 +766,12 @@ def razorpay_webhook(request):
                 payment_id = event['payload']['payment']['entity']['id']
                 
                 # Find the order and update its status.
-                order = Order.objects.get(razorpay_order_id=razorpay_order_id)
-                order.payment_status = 'paid'
-                order.razorpay_payment_id = payment_id
-                order.save(update_fields=['payment_status', 'razorpay_payment_id'])
-                logger.info(f"Webhook: Payment confirmed for order {order.tracking_code}.")
+                orders_to_update = Order.objects.filter(razorpay_order_id=razorpay_order_id)
+                for order in orders_to_update:
+                    order.payment_status = 'paid'
+                    order.razorpay_payment_id = payment_id
+                    order.save(update_fields=['payment_status', 'razorpay_payment_id'])
+                logger.info(f"Webhook: Payment confirmed for Razorpay order {razorpay_order_id}, affecting {orders_to_update.count()} NexCart orders.")
         except Exception as e:
             logger.error(f"Razorpay webhook verification failed: {e}")
             return HttpResponse(status=400)
@@ -758,29 +786,10 @@ def my_orders(request):
     Displays a list of all orders placed by the current user.
     This view now processes order data to prevent template errors if a product has been deleted.
     """
-    # FIX: Fetch ONLY the orders placed by the current logged-in user.
-    # This is the correct and simplified logic.
-    orders_qs = Order.objects.filter(user=request.user).prefetch_related('items__product').order_by('-created_at')
-
-    # Process the orders to create a safe, clean data structure for the template.
-    processed_orders = []
-    for order in orders_qs:
-        processed_items = []
-        for item in order.items.all():
-            # Build a dictionary for each item to ensure safe access in the template.
-            processed_items.append({
-                'name': item.product_name,  # Always use the saved product_name.
-                'quantity': item.quantity,
-                'price': item.price,
-                # Safely get the image URL.
-                'image_url': item.product.image_url if item.product else None,
-            })
-        processed_orders.append({
-            'instance': order,  # The original order object
-            'items': processed_items, # The list of safe item dictionaries
-        })
-
-    return render(request, 'tracking/my_orders.html', {'orders': processed_orders})
+    # Fetch all orders for the current user. We prefetch related items and their products
+    # to avoid extra database queries inside the template.
+    orders = Order.objects.filter(user=request.user).prefetch_related('items__product').order_by('-created_at')
+    return render(request, 'tracking/my_orders.html', {'orders': orders})
 
 
 @login_required
